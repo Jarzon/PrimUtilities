@@ -1,5 +1,5 @@
 <?php
-namespace PrimUtilities\Service;
+namespace PrimUtilities;
 
 class Paginator
 {
@@ -9,7 +9,7 @@ class Paginator
     public $elementsPerPages = 1;
     public $showPagesNumber = 1;
 
-    function __construct($currentPage, $numberOfElements, $elementsPerPages, $showPagesNumber = 3)
+    function __construct(int $currentPage, int $numberOfElements, int $elementsPerPages, int $showPagesNumber = 3) : void
     {
         $this->numberOfElements = $numberOfElements;
         $this->elementsPerPages = $elementsPerPages;
@@ -33,32 +33,32 @@ class Paginator
         $this->currentPage = $currentPage;
     }
 
-    function getNumberPages()
+    function getNumberPages() : int
     {
         return $this->numberOfPages;
     }
 
-    function getPage()
+    function getPage() : int
     {
         return $this->currentPage;
     }
 
-    function getFirstPageElement()
+    function getFirstPageElement() : int
     {
         return ($this->currentPage - 1) * $this->elementsPerPages;
     }
 
-    function getLast()
+    function getLast() : int
     {
         return (($this->currentPage - 1) * $this->elementsPerPages) + $this->elementsPerPages;
     }
 
-    function getElementsPerPages()
+    function getElementsPerPages() : int
     {
         return $this->elementsPerPages;
     }
 
-    function showPages()
+    function showPages() : string
     {
         $output = '';
         for($current = ($this->currentPage - 3), $stop = ($this->currentPage + $this->showPagesNumber); $current < $stop; ++$current)
