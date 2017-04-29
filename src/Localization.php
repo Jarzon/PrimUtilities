@@ -3,13 +3,17 @@ namespace PrimUtilities;
 
 trait Localization
 {
-    protected $language = 'en';
-    static protected $messagesLanguage = '';
-    protected $messages = [];
+    public $language = 'en';
+    static public $messagesLanguage = '';
+    public $messages = [];
 
-    function __construct()
+    function translate(string $message) : string
     {
-        $this->fetchTranslation();
+        return $this->messages[$message][self::$messagesLanguage];
+    }
+
+    function currency(float $price) : string {
+        return number_format($price, 2, ',', ' ') . ' $';
     }
 
     function getLanguage() : string
@@ -22,6 +26,16 @@ trait Localization
         $this->language = $language;
     }
 
+    function renderTemplate(string $view, string $packDirectory = '', bool $default = false)
+    {
+        if(self::$messagesLanguage === '') {
+            $this->fetchTranslation();
+            self::$messagesLanguage = array_search($this->language, $this->messages['languages']);
+        }
+
+        parent::renderTemplate($view, $packDirectory, $default);
+    }
+
     function fetchTranslation()
     {
         $file = $this->root . 'app/config/messages.json';
@@ -31,9 +45,5 @@ trait Localization
             // TODO: Cache the file
             $this->messages = json_decode(file_get_contents($file), true);
         }
-    }
-
-    function currency(float $price) : string {
-        return number_format($price, 2, ',', ' ') . ' $';
     }
 }
