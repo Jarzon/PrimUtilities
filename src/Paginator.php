@@ -3,11 +3,11 @@ namespace PrimUtilities;
 
 class Paginator
 {
-    public $currentPage = 0;
-    public $numberOfPages = 1;
-    public $numberOfElements = 1;
-    public $elementsPerPages = 1;
-    public $showPagesNumber = 1;
+    protected $currentPage = 0;
+    protected $numberOfPages = 1;
+    protected $numberOfElements = 1;
+    protected $elementsPerPages = 1;
+    protected $showPagesNumber = 1;
 
     function __construct(int $currentPage, int $numberOfElements, int $elementsPerPages, int $showPagesNumber = 3) : void
     {
