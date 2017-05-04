@@ -9,7 +9,7 @@ trait Localization
 
     function translate(string $message) : string
     {
-        return $this->messages[$message][self::$messagesLanguage];
+        return (isset($this->messages[$message]))? $this->messages[$message][self::$messagesLanguage]: $message;
     }
 
     function currency(float $price) : string {
