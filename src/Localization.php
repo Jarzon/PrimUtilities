@@ -33,6 +33,10 @@ trait Localization
             self::$messagesLanguage = array_search($this->language, $this->messages['languages']);
         }
 
+        $_ = $trans = $translate = function(string $message) {
+            return $this->translate($message);
+        };
+
         parent::renderTemplate($view, $packDirectory, $default);
     }
 
