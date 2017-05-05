@@ -9,7 +9,7 @@ class Paginator
     protected $elementsPerPages = 1;
     protected $showPagesNumber = 1;
 
-    function __construct(int $currentPage, int $numberOfElements, int $elementsPerPages, int $showPagesNumber = 3) : void
+    function __construct(int $currentPage, int $numberOfElements, int $elementsPerPages, int $showPagesNumber = 3)
     {
         $this->numberOfElements = $numberOfElements;
         $this->elementsPerPages = $elementsPerPages;
