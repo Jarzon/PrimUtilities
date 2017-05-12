@@ -24,16 +24,25 @@ trait Forms
                 <?php if(isset($form['label'])) { ?>
                     <label><?=!empty($form['label'])? $this->translate($form['label']): $this->translate($form['name'])?>
                 <?php }
-                if($type == 'select') { ?>
+                if($type == 'select'): ?>
                     <select name="<?=$form['name']?>" <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                         <?php foreach($form['value'] as $index => $row) { ?>
                             <option value="<?=$row?>" <?=(isset($form['selected']) && $row == $form['selected'])? 'selected': ''?>><?=$index?></option>
                         <?php } ?>
                     </select>
-                <?php } else { ?>
-                    <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$form['value']?>" <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?> <?=isset($form['required'])? 'required': ''?> <?=isset($form['checked'])? 'checked': ''?>>
-                <?php }
-                echo isset($form['label'])? '</label>': '';
+                <?php else: ?>
+                    <input
+                        type="<?=$type?>"
+                        name="<?=$form['name']?>"
+                        value="<?=$form['value']?>"
+                        <?=isset($form['step'])? 'step="'.$form['step'].'"': ''?>
+                        <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>
+                        <?=isset($form['required'])? 'required': ''?>
+                        <?=isset($form['checked'])? 'checked': ''?>
+                    >
+                <?php endif ?>
+                <?= isset($form['label'])? '</label>': ''; ?>
+                <?php
             }
         }
     }
