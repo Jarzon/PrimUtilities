@@ -37,6 +37,7 @@ trait Forms
                         value="<?=$form['value']?>"
                         <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>
                         <?=isset($form['step'])? 'step="'.$form['step'].'"': ''?>
+                        <?=isset($form['pattern'])? 'pattern="'.$form['pattern'].'"': ''?>
                         <?=isset($form['novalidate'])? 'novalidate': ''?>
                         <?=isset($form['required'])? 'required': ''?>
                         <?=isset($form['checked'])? 'checked': ''?>
