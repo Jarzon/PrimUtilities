@@ -132,6 +132,11 @@ class Forms
                     throw new \Exception($input['name'] . ' is not a valid email');
                 }
             }
+            else if($input['type'] == 'url') {
+                if(!filter_var($value, FILTER_VALIDATE_URL)) {
+                    throw new \Exception($input['name'] . ' is not a valid url');
+                }
+            }
 
             $params[] = $value;
         }
