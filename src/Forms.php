@@ -52,6 +52,11 @@ class Forms
         $this->forms[] = $this->row('email', $label, $name, $class, $value, $max, $min, $placeholder, '');
     }
 
+    public function url(string $label = '', string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '')
+    {
+        $this->forms[] = $this->row('url', $label, $name, $class, $value, $max, $min, $placeholder, '');
+    }
+
     public function number(string $label = '', string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 1, string $placeholder = '')
     {
         $this->forms[] = $this->row('number', $label, $name, $class, $value, $max, $min, $placeholder, '', $step);
