@@ -79,12 +79,12 @@ class Forms
 
     public function select(string $label = '', string $name, string $class = '', array $value = [], string $checked = '')
     {
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, '', '');
+        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '');
     }
 
     public function radio(string $name, string $class = '', array $value = [], string $checked = '')
     {
-        $this->forms[] = $this->row('text', false, $name, $class, $value, false, false, '', '');
+        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '');
     }
 
     public function verification(array $post) : array
@@ -181,11 +181,11 @@ class Forms
                         <?=isset($form['checked'])? 'checked': ''?>
                         <?=isset($form['placeholder'])? 'placeholder="'.$form['placeholder'].'"': ''?>
 
-                        <?php if($form['type'] == 'text' || $form['type'] == 'password' || $form['type'] == 'email') { ?>
+                        <?php if($type == 'text' || $type == 'password' || $type == 'email') { ?>
                             <?=isset($form['min'])? 'minlength="'.$form['min'].'"': ''?>
                             <?=isset($form['max'])? 'maxlength="'.$form['max'].'"': ''?>
                         <?php } ?>
-                        <?php if($form['type'] == 'text' || $form['type'] == 'password' || $form['type'] == 'email') { ?>
+                        <?php if($type == 'text' || $type == 'password' || $type == 'email') { ?>
                             <?=isset($form['min'])? 'min="'.$form['min'].'"': ''?>
                             <?=isset($form['max'])? 'max="'.$form['max'].'"': ''?>
                         <?php } ?>
