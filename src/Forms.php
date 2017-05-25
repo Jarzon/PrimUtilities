@@ -88,7 +88,7 @@ class Forms
         foreach($this->forms as $input) {
             $value = $post[$input['name']];
 
-            if($input['type'] == 'text' || $input['type'] == 'password') {
+            if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
                 $numberChars = mb_strlen($value);
                 if($numberChars > $input['max'] && $input['max'] != -1) {
                     return $input['name'] . ' is too long';
@@ -97,7 +97,7 @@ class Forms
                     return $input['name'] . ' is too short';
                 }
             }
-            else if($input['type'] == 'number') {
+            else if(($input['type'] == 'number' || $input['type'] == 'float') && isset($input['min']) && isset($input['max'])) {
                 if($value > $input['max'] && $input['max'] != -1) {
                     return $input['name'] . ' is too high';
                 }
