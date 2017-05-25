@@ -6,27 +6,27 @@ class Forms
     protected $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
-    protected function row($type, $label, string $name, string $class, $value, int $max, int $min, string $placeholder, string $pattern, $step = false)
+    protected function row($type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false)
     {
         $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value, 'min' => $min];
 
         if($label !== false) {
-            array_push($row, ['label' => $label]);
+            $row['label'] = $label;
         }
         if($placeholder !== '') {
-            array_push($row, ['placholder' => $placeholder]);
+            $row['placholder'] = $placeholder;
         }
         if($pattern !== '') {
-            array_push($row, ['pattern' => $pattern]);
+            $row['pattern'] = $pattern;
         }
         if($max !== false) {
-            array_push($row, ['max' => $max]);
+            $row['max'] = $max;
         }
         if($min !== false) {
-            array_push($row, ['min' => $min]);
+            $row['min'] = $min;
         }
         if($step !== false) {
-            array_push($row, ['step' => $step]);
+            $row['step'] = $step;
         }
 
         return $row;
@@ -34,7 +34,7 @@ class Forms
 
     public function hidden(string $name, string $value = '', $max = false)
     {
-        $this->forms[] = $this->row('password', false, $name, '', $value, $max, -1, '', '');
+        $this->forms[] = $this->row('password', false, $name, '', $value, $max, 0, '', '');
     }
 
     public function text($label = '', string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '', string $pattern = '')
