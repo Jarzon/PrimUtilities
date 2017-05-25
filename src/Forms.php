@@ -6,54 +6,80 @@ class Forms
     protected $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
-    public function hidden(string $name, string $value = '', int $max = -1, int $min = 0)
+    protected function row($type, $label, string $name, string $class, $value, string $placeholder, string $pattern, int $max, int $min, $step = false)
     {
-        $this->forms[] = ['type' => 'hidden', 'label' => '', 'name' => $name, 'value' => $value, 'max' => $max, 'min' => $min];
+        $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value, 'min' => $min];
+
+        if($label !== false) {
+            array_push($row, ['label' => $label]);
+        }
+        if($placeholder !== '') {
+            array_push($row, ['placholder' => $placeholder]);
+        }
+        if($pattern !== '') {
+            array_push($row, ['pattern' => $pattern]);
+        }
+        if($max !== false) {
+            array_push($row, ['max' => $max]);
+        }
+        if($min !== false) {
+            array_push($row, ['min' => $min]);
+        }
+        if($step !== false) {
+            array_push($row, ['step' => $step]);
+        }
+
+        return $row;
     }
 
-    public function text(string $label = '', string $name, string $class = '', string $value = '', string $pattern = '', int $max = -1, int $min = 0)
+    public function hidden(string $name, string $value = '', $max = false)
     {
-        $this->forms[] = ['type' => 'text', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'max' => $max, 'min' => $min, 'pattern' => $pattern];
+        $this->forms[] = $this->row('password', false, $name, '', $value, '', '', $max, -1);
     }
 
-    public function password(string $label = '', string $name, string $class = '', string $value = '', string $pattern = '', int $max = -1, int $min = -1)
+    public function text($label = '', string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '', $max = false, int $min = 0)
     {
-        $this->forms[] = ['type' => 'password', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'max' => $max, 'min' => $min];
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, $placeholder, $pattern, $max, $min);
     }
 
-    public function email(string $label = '', string $name, string $class = '', string $value = '', int $max = -1, int $min = 0)
+    public function password(string $label = '', string $name, string $class = '', string $value = '', string $placeholder = '', $max = false, int $min = 0)
     {
-        $this->forms[] = ['type' => 'email', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'max' => $max, 'min' => $min];
+        $this->forms[] = $this->row('password', $label, $name, $class, $value, $placeholder, '', $max, $min);
     }
 
-    public function number(string $label = '', string $name, string $class = '', string $value = '', float $step = 1, int $max = -1, int $min = -1)
+    public function email(string $label = '', string $name, string $class = '', string $value = '', string $placeholder = '', $max = false, int $min = 0)
     {
-        $this->forms[] = ['type' => 'number', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'max' => $max, 'min' => $min, 'step' => $step];
+        $this->forms[] = $this->row('email', $label, $name, $class, $value, $placeholder, '', $max, $min);
     }
 
-    public function float(string $label = '', string $name, string $class = '', string $value = '', float $step = 0.01, float $max = -1.0, float $min = -1.0)
+    public function number(string $label = '', string $name, string $class = '', string $value = '', float $step = 1, string $placeholder = '', $max = false, $min = false)
     {
-        $this->forms[] = ['type' => 'number', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'max' => $max, 'min' => $min, 'step' => $step];
+        $this->forms[] = $this->row('number', $label, $name, $class, $value, $placeholder, '', $max, $min, $step);
     }
 
-    public function date(string $label = '', string $name, string $class = '', string $value = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}')
+    public function float(string $label = '', string $name, string $class = '', string $value = '', float $step = 0.01, string $placeholder = '', $max = false, $min = false)
     {
-        $this->forms[] = ['type' => 'text', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'pattern' => $pattern];
+        $this->forms[] = $this->row('number', $label, $name, $class, $value, $placeholder, '', $max, $min, $step);
     }
 
-    public function datetime(string $label = '', string $name, string $class = '', string $value = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}')
+    public function date(string $label = '', string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}')
     {
-        $this->forms[] = ['type' => 'text', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'pattern' => $pattern];
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, $placeholder, $pattern, false, false);
+    }
+
+    public function datetime(string $label = '', string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}')
+    {
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, $placeholder, $pattern, false, false);
     }
 
     public function select(string $label = '', string $name, string $class = '', array $value = [], string $checked = '')
     {
-        $this->forms[] = ['type' => 'select', 'label' => $label, 'name' => $name, 'class' => $class, 'value' => $value, 'checked' => $checked];
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, '', '', false, false);
     }
 
     public function radio(string $name, string $class = '', array $value = [], string $checked = '')
     {
-        $this->forms[] = ['type' => 'radio', 'name' => $name, 'class' => $class, 'value' => $value, 'checked' => $checked];
+        $this->forms[] = $this->row('text', false, $name, $class, $value, '', '', false, false);
     }
 
     public function verification(array $post)
