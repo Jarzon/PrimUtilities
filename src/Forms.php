@@ -6,9 +6,9 @@ class Forms
     protected $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
-    protected function row($type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false)
+    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false) : array
     {
-        $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value, 'min' => $min];
+        $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value];
 
         if($label !== false) {
             $row['label'] = $label;
@@ -82,7 +82,7 @@ class Forms
         $this->forms[] = $this->row('text', false, $name, $class, $value, false, false, '', '');
     }
 
-    public function verification(array $post)
+    public function verification(array $post) : array
     {
         $params = [];
         foreach($this->forms as $input) {
@@ -91,25 +91,25 @@ class Forms
             if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
                 $numberChars = mb_strlen($value);
                 if($numberChars > $input['max'] && $input['max'] != -1) {
-                    return $input['name'] . ' is too long';
+                    throw new \Exception($input['name'] . ' is too long');
                 }
                 else if($numberChars < $input['min']) {
-                    return $input['name'] . ' is too short';
+                    throw new \Exception($input['name'] . ' is too short');
                 }
             }
             else if(($input['type'] == 'number' || $input['type'] == 'float') && isset($input['min']) && isset($input['max'])) {
                 if($value > $input['max'] && $input['max'] != -1) {
-                    return $input['name'] . ' is too high';
+                    throw new \Exception($input['name'] . ' is too high');
                 }
                 else if($value < $input['min'] && $input['min'] != -1) {
-                    return $input['name'] . ' is too low';
+                    throw new \Exception($input['name'] . ' is too low');
                 }
             }
             else if($input['type'] == 'date') {
                 $format = 'd/m/Y';
                 $d = \DateTime::createFromFormat($format, $value);
                 if(!$d || $d->format($format) != $value) {
-                    return $input['name'] . ' is not a valid date';
+                    throw new \Exception($input['name'] . ' is not a valid date');
                 }
             }
             else if($input['type'] == 'select' || $input['type'] == 'radio') {
@@ -124,7 +124,7 @@ class Forms
             }
             else if($input['type'] == 'email') {
                 if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    return $input['name'] . ' is not a valid email';
+                    throw new \Exception($input['name'] . ' is not a valid email');
                 }
             }
 
