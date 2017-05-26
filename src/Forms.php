@@ -6,7 +6,7 @@ class Forms
     protected $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
-    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false) : array
+    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false, string $selected = '') : array
     {
         $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value];
 
@@ -27,6 +27,9 @@ class Forms
         }
         if($step !== false) {
             $row['step'] = $step;
+        }
+        if($selected !== '') {
+            $row['selected'] = $selected;
         }
 
         return $row;
@@ -77,14 +80,14 @@ class Forms
         $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $placeholder, $pattern);
     }
 
-    public function select(string $label = '', string $name, string $class = '', array $value = [], string $checked = '')
+    public function select(string $label = '', string $name, string $class = '', array $value = [], string $selected = '')
     {
-        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '');
+        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '', $selected);
     }
 
-    public function radio(string $name, string $class = '', array $value = [], string $checked = '')
+    public function radio(string $name, string $class = '', array $value = [], string $selected = '')
     {
-        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '');
+        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '', $selected);
     }
 
     public function verification(array $post) : array
@@ -160,7 +163,7 @@ class Forms
                 <div <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                     <?php foreach($form['value'] as $index => $row) { ?>
                     <label>
-                        <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$row?>"  <?=(isset($form['checked']) && $row == $form['checked'])? 'checked': ''?>>
+                        <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$row?>"  <?=(isset($form['selected']) && $row == $form['selected'])? 'checked': ''?>>
                         <?=$this->translate($index)?>
                     </label>
                     <?php } ?>
