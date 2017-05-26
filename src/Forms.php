@@ -6,6 +6,11 @@ class Forms
     public $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
+    public function __construct($view)
+    {
+        $this->view = $view;
+    }
+
     protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false, string $selected = '') : array
     {
         $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value];
@@ -166,7 +171,7 @@ class Forms
                     <?php foreach($form['value'] as $index => $row) { ?>
                     <label>
                         <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$row?>"  <?=(isset($form['selected']) && $row == $form['selected'])? 'checked': ''?>>
-                        <?=$this->translate($index)?>
+                        <?=$this->view->translate($index)?>
                     </label>
                     <?php } ?>
                 </div>
