@@ -3,7 +3,7 @@ namespace PrimUtilities;
 
 class Forms
 {
-    protected $forms = [];
+    public $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
     protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false, string $selected = '') : array
