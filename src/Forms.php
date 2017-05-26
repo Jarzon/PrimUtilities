@@ -93,6 +93,13 @@ class Forms
         foreach($this->forms as $input) {
             $value = $post[$input['name']];
 
+            if($input['type'] == 'number') {
+                $value = (int)$value;
+            }
+            if($input['type'] == 'float') {
+                $value = (float)$value;
+            }
+
             if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
                 $numberChars = mb_strlen($value);
                 if($numberChars > $input['max'] && $input['max'] != -1) {
