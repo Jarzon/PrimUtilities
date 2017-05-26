@@ -11,7 +11,7 @@ class Forms
         $this->view = $view;
     }
 
-    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false, string $selected = '') : array
+    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false, $selected = false) : array
     {
         $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value];
 
@@ -35,7 +35,7 @@ class Forms
         if($step !== false) {
             $row['step'] = $step;
         }
-        if($selected !== '') {
+        if($selected !== false) {
             $row['selected'] = $selected;
         }
 
@@ -170,7 +170,7 @@ class Forms
                 <div <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                     <?php foreach($form['value'] as $index => $row) { ?>
                     <label>
-                        <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$row?>"  <?=(isset($form['selected']) && $row == $form['selected'])? 'checked': ''?>>
+                        <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
                         <?=$this->view->translate($index)?>
                     </label>
                     <?php } ?>
@@ -182,7 +182,7 @@ class Forms
                 if($type == 'select') { ?>
                     <select name="<?=$form['name']?>" <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                         <?php foreach($form['value'] as $index => $row) { ?>
-                            <option value="<?=$row?>" <?=(isset($form['selected']) && $row == $form['selected'])? 'selected': ''?>><?=$index?></option>
+                            <option value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'selected': ''?>><?=$index?></option>
                         <?php } ?>
                     </select>
                 <?php } else { ?>
