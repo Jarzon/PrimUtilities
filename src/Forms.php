@@ -89,12 +89,12 @@ class Forms
 
     public function select(string $label = '', string $name, string $class = '', array $value = [], string $selected = '')
     {
-        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '', $selected);
+        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '', false, $selected);
     }
 
     public function radio(string $name, string $class = '', array $value = [], string $selected = '')
     {
-        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '', $selected);
+        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '', false, $selected);
     }
 
     public function verification(array $post) : array
