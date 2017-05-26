@@ -10,7 +10,9 @@ class Forms
     {
         $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value];
 
-        if($label !== false) {
+        if($label === '') {
+            $row['label'] = $name;
+        } else if($label !== false) {
             $row['label'] = $label;
         }
         if($placeholder !== '') {
