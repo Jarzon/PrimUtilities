@@ -74,7 +74,7 @@ class Forms
 
     public function float(string $label = '', string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 0.01, string $placeholder = '')
     {
-        $this->forms[] = $this->row('number', $label, $name, $class, $value, $max, $min, $placeholder, '', $step);
+        $this->forms[] = $this->row('float', $label, $name, $class, $value, $max, $min, $placeholder, '', $step);
     }
 
     public function date(string $label = '', string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}')
