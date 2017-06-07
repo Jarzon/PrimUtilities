@@ -166,6 +166,8 @@ class Forms
         foreach($this->forms as $form) {
             $type = isset($form['type'])? $form['type']: 'text';
 
+            if($type == 'float') $type = 'number';
+
             if($type == 'radio') { ?>
                 <div <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                     <?php foreach($form['value'] as $index => $row) { ?>
