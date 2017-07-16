@@ -1,6 +1,9 @@
 <?php
 namespace PrimUtilities;
 
+/*
+ * Form generator
+ * */
 class Forms
 {
     public $forms = [];

@@ -1,6 +1,9 @@
 <?php
 namespace PrimUtilities;
 
+/*
+ * Paginator Service
+ * */
 class Paginator
 {
     protected $currentPage = 0;

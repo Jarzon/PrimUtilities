@@ -1,6 +1,9 @@
 <?php
 namespace PrimUtilities;
 
+/*
+ * Trait used to inject localization code into the View
+ * */
 trait Localization
 {
     public $language = 'en';
