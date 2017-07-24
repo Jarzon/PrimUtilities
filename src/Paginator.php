@@ -11,8 +11,9 @@ class Paginator
     protected $numberOfElements = 1;
     protected $elementsPerPages = 1;
     protected $showPagesNumber = 1;
+    protected $backward = false;
 
-    function __construct(int $currentPage, int $numberOfElements, int $elementsPerPages, int $showPagesNumber = 3)
+    function __construct(int $currentPage, int $numberOfElements, int $elementsPerPages, int $showPagesNumber = 3, bool $backward = false)
     {
         $this->numberOfElements = $numberOfElements;
         $this->elementsPerPages = $elementsPerPages;
@@ -34,6 +35,7 @@ class Paginator
         }
 
         $this->currentPage = $currentPage;
+        $this->backward = $backward;
     }
 
     function getNumberPages() : int
@@ -48,12 +50,26 @@ class Paginator
 
     function getFirstPageElement() : int
     {
-        return ($this->currentPage - 1) * $this->elementsPerPages;
+        $result = ($this->currentPage - 1) * $this->elementsPerPages;
+
+        if($this->backward) {
+            $result = $this->numberOfElements - ($result + $this->elementsPerPages);
+        }
+
+        return $result;
     }
 
     function getLast() : int
     {
-        return (($this->currentPage - 1) * $this->elementsPerPages) + $this->elementsPerPages;
+        $result = ($this->currentPage - 1) * $this->elementsPerPages;
+
+        if($this->backward) {
+            $result = $this->numberOfElements - $result;
+        } else {
+            $result += $this->elementsPerPages;
+        }
+
+        return $result;
     }
 
     function getElementsPerPages() : int
