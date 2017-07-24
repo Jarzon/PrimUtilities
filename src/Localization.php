@@ -10,6 +10,15 @@ trait Localization
     static public $messagesLanguage = '';
     public $messages = [];
 
+    function buildLocalization() {
+        $this->setMessagesLanguage();
+        $this->fetchTranslation();
+
+        $this->registerFunction('_', function(string $message) {
+            return $this->translate($message);
+        });
+    }
+
     function translate(string $message) : string
     {
         return (isset($this->messages[$message]))? $this->messages[$message][self::$messagesLanguage]: $message;
@@ -30,18 +39,9 @@ trait Localization
         $this->language = $language;
     }
 
-    function renderTemplate(string $view, string $packDirectory = '', bool $default = false)
+    function setMessagesLanguage()
     {
-        if(self::$messagesLanguage === '') {
-            $this->fetchTranslation();
-            self::$messagesLanguage = array_search($this->language, $this->messages['languages']);
-        }
-
-        $this->registerFunction('_', function(string $message) {
-            return $this->translate($message);
-        });
-
-        parent::renderTemplate($view, $packDirectory, $default);
+        self::$messagesLanguage = array_search($this->language, $this->messages['languages']);
     }
 
     function fetchTranslation()
