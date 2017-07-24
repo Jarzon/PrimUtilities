@@ -4,7 +4,7 @@ Class ViewMock {
 
 }
 
-class ProjectsTest extends PHPUnit_Framework_TestCase
+class FormsTest extends PHPUnit_Framework_TestCase
 {
     public function testLengthLowerThatMin()
     {
