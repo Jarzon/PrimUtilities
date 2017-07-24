@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
 
 Class ViewMock {
 
 }
 
-class FormsTest extends PHPUnit_Framework_TestCase
+class FormsTest extends TestCase
 {
     public function testLengthLowerThatMin()
     {

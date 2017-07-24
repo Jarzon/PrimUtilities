@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
 
 Class View extends \Prim\View {
     use \PrimUtilities\Localization;
@@ -9,7 +12,7 @@ Class View extends \Prim\View {
     }
 }
 
-class LocalizationTest extends PHPUnit_Framework_TestCase
+class LocalizationTest extends TestCase
 {
     public function testGetLanguage()
     {

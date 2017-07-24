@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
 
-class PaginatorTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class PaginatorTest extends TestCase
 {
     public function testGetNumberPages()
     {
