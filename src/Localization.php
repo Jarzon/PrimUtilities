@@ -11,8 +11,8 @@ trait Localization
     public $messages = [];
 
     function buildLocalization() {
-        $this->setMessagesLanguage();
         $this->fetchTranslation();
+        $this->setMessagesLanguage();
 
         $this->registerFunction('_', function(string $message) {
             return $this->translate($message);
