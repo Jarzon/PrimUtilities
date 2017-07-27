@@ -182,7 +182,7 @@ class Forms
                 </div>
             <?php } else { ?>
                 <?php if(isset($form['label'])) { ?>
-                    <label><?=$form['label']?>
+                    <label><?=$this->view->translate($form['label'])?>
                 <?php }
                 if($type == 'select') { ?>
                     <select name="<?=$form['name']?>" <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>

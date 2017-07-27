@@ -1,17 +1,16 @@
 <?php
 declare(strict_types=1);
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
-
-Class ViewMock {
-
-}
+use Tests\Mock\View;
 
 class FormsTest extends TestCase
 {
     public function testLengthLowerThatMin()
     {
-        $viewMock = new ViewMock();
+        $viewMock = new View('');
         $forms = new \PrimUtilities\Forms($viewMock);
 
         $forms->text('', 'test', '', '', 10, 4);
@@ -25,15 +24,15 @@ class FormsTest extends TestCase
         } catch(\Exception $e) {
             $this->assertEquals('test is too short', $e->getMessage());
         }
+
+        return $forms;
     }
 
-    public function testLengthHigherThatMax()
+    /**
+     * @depends testLengthLowerThatMin
+     */
+    public function testLengthHigherThatMax($forms)
     {
-        $viewMock = new ViewMock();
-        $forms = new \PrimUtilities\Forms($viewMock);
-
-        $forms->text('', 'test', '', '', 10, 4);
-
         $post = [
             'test' => '123456789ab'
         ];
@@ -45,20 +44,18 @@ class FormsTest extends TestCase
         }
     }
 
-    public function testGenerateForms()
+    /**
+     * @depends testLengthLowerThatMin
+     */
+    public function testGenerateForms($forms)
     {
-        $viewMock = new ViewMock();
-        $forms = new \PrimUtilities\Forms($viewMock);
-
-        $forms->text('', 'test', '', '', 10, 4);
-
         ob_start();
         $forms->generateForms();
         $content = ob_get_contents();
         ob_end_clean();
 
         // TODO: huh shouldn't echo the content it's inflexible, hard to test and spaces..
-        $this->assertEquals('                                    <label>test                                    <input
+        $this->assertEquals('                                    <label>Translated test                                    <input
                         type="text"
                         name="test"
                         value=""

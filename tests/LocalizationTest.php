@@ -1,27 +1,16 @@
 <?php
 declare(strict_types=1);
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
-
-Class View extends \Prim\View {
-    use \PrimUtilities\Localization;
-
-    public function __construct($root)
-    {
-
-    }
-}
+use Tests\Mock\View;
 
 class LocalizationTest extends TestCase
 {
     public function testGetLanguage()
     {
         $view = new View('');
-
-        $view->messages = [
-            'languages' => ['en', 'fr'],
-            'test' => ['testEN', 'testFR']
-        ];
 
         $view->setMessagesLanguage();
 
@@ -35,6 +24,6 @@ class LocalizationTest extends TestCase
      */
     public function testTranslate($view)
     {
-        $this->assertEquals('testEN', $view->translate('test'));
+        $this->assertEquals('Translated test', $view->translate('test'));
     }
 }
