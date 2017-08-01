@@ -164,8 +164,10 @@ class Forms
         return $params;
     }
 
-    public function generateForms()
+    public function generateForms() : string
     {
+        ob_start();
+
         foreach($this->forms as $form) {
             $type = isset($form['type'])? $form['type']: 'text';
 
@@ -218,5 +220,10 @@ class Forms
                 <?php
             }
         }
+
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return trim(preg_replace('/\s+/', ' ', $content));
     }
 }

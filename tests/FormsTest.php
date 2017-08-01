@@ -49,19 +49,8 @@ class FormsTest extends TestCase
      */
     public function testGenerateForms($forms)
     {
-        ob_start();
-        $forms->generateForms();
-        $content = ob_get_contents();
-        ob_end_clean();
+        $content = $forms->generateForms();
 
-        // TODO: huh shouldn't echo the content it's inflexible, hard to test and spaces..
-        $this->assertEquals('                                    <label>Translated test                                    <input
-                        type="text"
-                        name="test"
-                        value=""
-                        class=""                                                                                                                                                
-                                                    minlength="4"                            maxlength="10"                                                                            min="4"                            max="10"                        
-                    >
-                                </label>                ', $content);
+        $this->assertEquals('<label>Translated test <input type="text" name="test" value="" class="" minlength="4" maxlength="10" min="4" max="10" > </label>', $content);
     }
 }
