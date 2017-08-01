@@ -10,7 +10,7 @@ class LocalizationTest extends TestCase
 {
     public function testGetLanguage()
     {
-        $view = new View('');
+        $view = new View();
 
         $view->setMessagesLanguage();
 
