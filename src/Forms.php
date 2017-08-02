@@ -59,6 +59,7 @@ class Forms
 
         $attributes['type'] = $type;
         $attributes['name'] = $name;
+        if($value !== '') $attributes['value'] = $value;
 
         $row['attributes'] = $attributes;
 
@@ -201,10 +202,10 @@ class Forms
             if($form['type'] == 'radio') { ?>
                 <div <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                     <?php foreach($form['value'] as $index => $row) { ?>
-                    <label>
-                        <input type="<?=$form['type']?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
-                        <?=$this->view->translate($index)?>
-                    </label>
+                        <label>
+                            <input type="<?=$form['type']?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
+                            <?=$this->view->translate($index)?>
+                        </label>
                     <?php } ?>
                 </div>
             <?php } else { ?>
@@ -213,9 +214,9 @@ class Forms
                 <?php }
                 if($form['type'] == 'select') { ?>
                     <select
-                    <?php foreach($form['attributes'] as $index => $row) { ?>
-                        <?=$index?>="<?=$row?>"
-                    <?php } ?>
+                        <?php foreach($form['attributes'] as $index => $row) { ?>
+                            <?=$index?>="<?=$row?>"
+                        <?php } ?>
                     >
                         <?php foreach($form['value'] as $index => $row) { ?>
                             <option value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'selected': ''?>><?=$index?></option>
