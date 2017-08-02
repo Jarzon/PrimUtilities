@@ -4,72 +4,52 @@ declare(strict_types=1);
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use PrimUtilities\Forms;
 use Tests\Mock\View;
 
 class FormsTest extends TestCase
 {
-    public function testInitialize()
-    {
-        $viewMock = new View();
-
-        try {
-            $forms = new \PrimUtilities\Forms($viewMock);
-        } catch(\Exception $e) {
-            $this->assertEquals(false, $e->getMessage());
-        }
-        $this->assertEquals(true, true);
-
-
-        return $forms;
-    }
-
     /**
-     * @depends testInitialize
+     * @expectedException     \Exception
+     * @expectedExceptionMessage test is too short
      */
-    public function testLengthLowerThatMin($forms)
+    public function testLengthLowerThatMin()
     {
+        if(!defined('ROOT')) define('ROOT', '');
+
+        $viewMock = new View();
+        $forms = new Forms($viewMock, ['test' => 'a']);
+
         $forms->text('', 'test', '', '', 10, 4);
 
-        $post = [
-            'test' => 'a'
-        ];
-
-        try {
-            $forms->verification($post);
-
-            $content = $forms->generateForms();
-
-            $this->assertEquals('<label>Translated test <input type="text" name="test" value="" class="" minlength="4" maxlength="10" min="4" max="10" > </label>', $content);
-        } catch(\Exception $e) {
-            $this->assertEquals('test is too short', $e->getMessage());
-        }
+        $forms->verification();
 
         return $forms;
     }
 
     /**
-     * @depends testLengthLowerThatMin
+     * @expectedException     \Exception
+     * @expectedExceptionMessage test is too long
      */
-    public function testLengthHigherThatMax($forms)
+    public function testLengthHigherThatMax()
     {
-        $post = [
-            'test' => '123456789ab'
-        ];
+        $viewMock = new View();
+        $forms = new Forms($viewMock, ['test' => '123456789ab']);
 
-        try {
-            $forms->verification($post);
-        } catch(\Exception $e) {
-            $this->assertEquals('test is too long', $e->getMessage());
-        }
+        $forms->text('', 'test', '', '', 10, 4);
+
+        $forms->verification();
     }
 
-    /**
-     * @depends testLengthLowerThatMin
-     */
-    public function testGenerateForms($forms)
+    public function testGenerateForms()
     {
+        $viewMock = new View();
+        $forms = new Forms($viewMock, ['test' => 'a']);
+
+        $forms->text('', 'test', '', '', 10, 4);
+
         $content = $forms->generateForms();
 
-        $this->assertEquals('<label>Translated test <input type="text" name="test" value="" class="" minlength="4" maxlength="10" min="4" max="10" > </label>', $content);
+        $this->assertEquals('<label>Translated test <input class="" minlength="4" maxlength="10" type="text" name="test" > </label>', $content);
     }
 }
