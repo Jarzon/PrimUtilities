@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "41160b48534b32441847acd75dffc95c",
+    "content-hash": "3022687125e2e6a860fd47f30a75ff3e",
     "packages": [],
     "packages-dev": [
         {
@@ -63,16 +63,16 @@
         },
         {
             "name": "jarzon/prim",
-            "version": "0.5.9",
+            "version": "v0.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Jarzon/Prim.git",
-                "reference": "4e84c94c65abafa1383e9dcfdb164c2fba4ca1d0"
+                "reference": "bb3ac25240a30307e27bfa50b2b58e187f3dd13d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Jarzon/Prim/zipball/4e84c94c65abafa1383e9dcfdb164c2fba4ca1d0",
-                "reference": "4e84c94c65abafa1383e9dcfdb164c2fba4ca1d0",
+                "url": "https://api.github.com/repos/Jarzon/Prim/zipball/bb3ac25240a30307e27bfa50b2b58e187f3dd13d",
+                "reference": "bb3ac25240a30307e27bfa50b2b58e187f3dd13d",
                 "shasum": ""
             },
             "require": {
@@ -80,8 +80,7 @@
                 "php": ">=7.0.0"
             },
             "require-dev": {
-                "phpunit/dbunit": ">=1.2",
-                "phpunit/phpunit": "4.7.*"
+                "phpunit/phpunit": "6.2.*"
             },
             "type": "project",
             "autoload": {
@@ -104,7 +103,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2017-07-24T23:24:26+00:00"
+            "time": "2017-08-01T18:18:20+00:00"
         },
         {
             "name": "myclabs/deep-copy",
