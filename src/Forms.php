@@ -8,10 +8,12 @@ class Forms
 {
     public $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
+    protected $post = [];
 
-    public function __construct($view)
+    public function __construct($view, array $post)
     {
         $this->view = $view;
+        $this->post = $post;
     }
 
     protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder = '', string $pattern = '', array $attributes = [], $step = false, $selected = false) : array
@@ -122,9 +124,11 @@ class Forms
         $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '', [], false, $selected);
     }
 
-    public function verification(array $post) : array
+    public function verification() : array
     {
+        $post = $this->post;
         $params = [];
+
         foreach($this->forms as $input) {
             $value = $post[$input['name']];
 
