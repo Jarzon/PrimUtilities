@@ -46,6 +46,9 @@ class Forms
                     $attributes['min'] = $min;
                     $attributes['max'] = $max;
                 }
+
+                $row['min'] = $min;
+                $row['max'] = $max;
             }
 
             if($step !== false) {
