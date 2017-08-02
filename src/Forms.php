@@ -14,90 +14,112 @@ class Forms
         $this->view = $view;
     }
 
-    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder, string $pattern, $step = false, $selected = false) : array
+    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, string $placeholder = '', string $pattern = '', array $attributes = [], $step = false, $selected = false) : array
     {
-        $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value];
+        $row = ['type' => $type, 'name' => $name, 'class' => $class];
+
+        if($type === 'radio' || $type === 'select') {
+            $row['value'] = $value;
+
+            if($selected !== false) {
+                $row['selected'] = $selected;
+            }
+        }
+        else {
+            if($placeholder !== '') {
+                $attributes['placeholder'] = $placeholder;
+            }
+            if($pattern !== '') {
+                $attributes['pattern'] = $pattern;
+            }
+
+            $attributes['class'] = $class;
+
+            if($min !== false && $max !== false) {
+                if($type == 'text' || $type == 'password' || $type == 'email') {
+                    $attributes['minlength'] = $min;
+                    $attributes['maxlength'] = $max;
+                }
+                else if($type == 'number' || $type == 'float') {
+                    $attributes['min'] = $min;
+                    $attributes['max'] = $max;
+                }
+            }
+
+            if($step !== false) {
+                $attributes['step'] = $step;
+            }
+        }
 
         if($label === '') {
             $row['label'] = $name;
         } else if($label !== false) {
             $row['label'] = $label;
         }
-        if($placeholder !== '') {
-            $row['placholder'] = $placeholder;
-        }
-        if($pattern !== '') {
-            $row['pattern'] = $pattern;
-        }
-        if($max !== false) {
-            $row['max'] = $max;
-        }
-        if($min !== false) {
-            $row['min'] = $min;
-        }
-        if($step !== false) {
-            $row['step'] = $step;
-        }
-        if($selected !== false) {
-            $row['selected'] = $selected;
-        }
+
+        if($type == 'float') $type = 'number';
+
+        $attributes['type'] = $type;
+        $attributes['name'] = $name;
+
+        $row['attributes'] = $attributes;
 
         return $row;
     }
 
-    public function hidden(string $name, string $value = '', $max = false)
+    public function hidden(string $name, string $value = '', $max = false, array $attributes = [])
     {
-        $this->forms[] = $this->row('password', false, $name, '', $value, $max, 0, '', '');
+        $this->forms[] = $this->row('password', false, $name, '', $value, $max, 0, '', '', $attributes);
     }
 
-    public function text($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '', string $pattern = '')
+    public function text($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '', string $pattern = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, $max, $min, $placeholder, $pattern);
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, $max, $min, $placeholder, $pattern, $attributes);
     }
 
-    public function password($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '')
+    public function password($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('password', $label, $name, $class, $value, $max, $min, $placeholder, '');
+        $this->forms[] = $this->row('password', $label, $name, $class, $value, $max, $min, $placeholder, '', $attributes);
     }
 
-    public function email($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '')
+    public function email($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('email', $label, $name, $class, $value, $max, $min, $placeholder, '');
+        $this->forms[] = $this->row('email', $label, $name, $class, $value, $max, $min, $placeholder, '', $attributes);
     }
 
-    public function url($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '')
+    public function url($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, string $placeholder = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('url', $label, $name, $class, $value, $max, $min, $placeholder, '');
+        $this->forms[] = $this->row('url', $label, $name, $class, $value, $max, $min, $placeholder, '', $attributes);
     }
 
-    public function number($label, string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 1, string $placeholder = '')
+    public function number($label, string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 1, string $placeholder = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('number', $label, $name, $class, $value, $max, $min, $placeholder, '', $step);
+        $this->forms[] = $this->row('number', $label, $name, $class, $value, $max, $min, $placeholder, '', $attributes, $step);
     }
 
-    public function float($label, string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 0.01, string $placeholder = '')
+    public function float($label, string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 0.01, string $placeholder = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('float', $label, $name, $class, $value, $max, $min, $placeholder, '', $step);
+        $this->forms[] = $this->row('float', $label, $name, $class, $value, $max, $min, $placeholder, '', $attributes, $step);
     }
 
-    public function date($label, string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}')
+    public function date($label, string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}', array $attributes = [])
     {
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $placeholder, $pattern);
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $placeholder, $pattern, $attributes);
     }
 
-    public function datetime($label, string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}')
+    public function datetime($label, string $name, string $class = '', string $value = '', string $placeholder = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}', array $attributes = [])
     {
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $placeholder, $pattern);
+        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $placeholder, $pattern, $attributes);
     }
 
-    public function select($label, string $name, string $class = '', array $value = [], string $selected = '')
+    public function select($label, string $name, string $class = '', array $value = [], string $selected = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '', false, $selected);
+        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, '', '', $attributes, false, $selected);
     }
 
     public function radio(string $name, string $class = '', array $value = [], string $selected = '')
     {
-        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '', false, $selected);
+        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, '', '', [], false, $selected);
     }
 
     public function verification(array $post) : array
@@ -131,6 +153,8 @@ class Forms
                 }
             }
             else if($input['type'] == 'date') {
+                // TODO: Be able to change the format for every date and match the $format with pattern
+
                 $format = 'd/m/Y';
                 $d = \DateTime::createFromFormat($format, $value);
                 if(!$d || $d->format($format) != $value) {
@@ -169,15 +193,12 @@ class Forms
         ob_start();
 
         foreach($this->forms as $form) {
-            $type = isset($form['type'])? $form['type']: 'text';
 
-            if($type == 'float') $type = 'number';
-
-            if($type == 'radio') { ?>
+            if($form['type'] == 'radio') { ?>
                 <div <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
                     <?php foreach($form['value'] as $index => $row) { ?>
                     <label>
-                        <input type="<?=$type?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
+                        <input type="<?=$form['type']?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
                         <?=$this->view->translate($index)?>
                     </label>
                     <?php } ?>
@@ -186,34 +207,21 @@ class Forms
                 <?php if(isset($form['label'])) { ?>
                     <label><?=$this->view->translate($form['label'])?>
                 <?php }
-                if($type == 'select') { ?>
-                    <select name="<?=$form['name']?>" <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
+                if($form['type'] == 'select') { ?>
+                    <select
+                    <?php foreach($form['attributes'] as $index => $row) { ?>
+                        <?=$index?>="<?=$row?>"
+                    <?php } ?>
+                    >
                         <?php foreach($form['value'] as $index => $row) { ?>
                             <option value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'selected': ''?>><?=$index?></option>
                         <?php } ?>
                     </select>
                 <?php } else { ?>
                     <input
-                        type="<?=$type?>"
-                        name="<?=$form['name']?>"
-                        value="<?=$form['value']?>"
-                        <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>
-                        <?=isset($form['step'])? 'step="'.$form['step'].'"': ''?>
-                        <?=isset($form['pattern'])? 'pattern="'.$form['pattern'].'"': ''?>
-                        <?=isset($form['novalidate'])? 'novalidate': ''?>
-                        <?=isset($form['required'])? 'required': ''?>
-                        <?=isset($form['checked'])? 'checked': ''?>
-                        <?=isset($form['placeholder'])? 'placeholder="'.$form['placeholder'].'"': ''?>
-
-                        <?php if($type == 'text' || $type == 'password' || $type == 'email') { ?>
-                            <?=isset($form['min'])? 'minlength="'.$form['min'].'"': ''?>
-                            <?=isset($form['max'])? 'maxlength="'.$form['max'].'"': ''?>
-                        <?php } ?>
-                        <?php if($type == 'text' || $type == 'password' || $type == 'email') { ?>
-                            <?=isset($form['min'])? 'min="'.$form['min'].'"': ''?>
-                            <?=isset($form['max'])? 'max="'.$form['max'].'"': ''?>
-                        <?php } ?>
-
+                    <?php foreach($form['attributes'] as $index => $row) { ?>
+                        <?=$index?>="<?=$row?>"
+                    <?php } ?>
                     >
                 <?php } ?>
                 <?= isset($form['label'])? '</label>': ''; ?>
