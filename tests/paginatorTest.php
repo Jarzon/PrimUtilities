@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 use PHPUnit\Framework\TestCase;
 
 class PaginatorTest extends TestCase
@@ -41,6 +39,8 @@ class PaginatorTest extends TestCase
     public function testReverse()
     {
         $pagination = new \PrimUtilities\Paginator(2, 100, 10, 3, true);
+
+        $this->assertEquals(10, $pagination->getNumberPages());
 
         return $pagination;
     }
