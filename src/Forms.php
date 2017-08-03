@@ -10,9 +10,8 @@ class Forms
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
     protected $post = [];
 
-    public function __construct($view, array $post)
+    public function __construct(array $post)
     {
-        $this->view = $view;
         $this->post = $post;
     }
 
@@ -61,7 +60,13 @@ class Forms
         $attributes['name'] = $name;
         if($value !== '') $attributes['value'] = $value;
 
-        $row['attributes'] = $attributes;
+        $row['html'] = '<input';
+
+        foreach($attributes as $attribute => $value) {
+            $row['html'] .= " $attribute=\"$value\"";
+        }
+
+        $row['html'] .= '>';
 
         return $row;
     }
@@ -167,7 +172,7 @@ class Forms
                 }
             }
             else if($input['type'] == 'select' || $input['type'] == 'radio') {
-
+                // TODO: Validate that the value is in the list
             }
             else if($input['type'] == 'checkbox') {
                 if(isset($post[$input['name']])) {
@@ -193,6 +198,11 @@ class Forms
         return $params;
     }
 
+    public function getForms() : array
+    {
+        return $this->forms;
+    }
+
     public function generateForms() : string
     {
         ob_start();
@@ -204,13 +214,13 @@ class Forms
                     <?php foreach($form['value'] as $index => $row) { ?>
                         <label>
                             <input type="<?=$form['type']?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
-                            <?=$this->view->translate($index)?>
+                            <?=$index?>
                         </label>
                     <?php } ?>
                 </div>
             <?php } else { ?>
                 <?php if(isset($form['label'])) { ?>
-                    <label><?=$this->view->translate($form['label'])?>
+                    <label><?=$form['label']?>
                 <?php }
                 if($form['type'] == 'select') { ?>
                     <select

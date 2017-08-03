@@ -5,7 +5,6 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use PrimUtilities\Forms;
-use Tests\Mock\View;
 
 class FormsTest extends TestCase
 {
@@ -15,10 +14,7 @@ class FormsTest extends TestCase
      */
     public function testLengthLowerThatMin()
     {
-        if(!defined('ROOT')) define('ROOT', '');
-
-        $viewMock = new View();
-        $forms = new Forms($viewMock, ['test' => 'a']);
+        $forms = new Forms(['test' => 'a']);
 
         $forms->text('', 'test', '', '', 10, 4);
 
@@ -33,23 +29,21 @@ class FormsTest extends TestCase
      */
     public function testLengthHigherThatMax()
     {
-        $viewMock = new View();
-        $forms = new Forms($viewMock, ['test' => '123456789ab']);
+        $forms = new Forms(['test' => '123456789ab']);
 
         $forms->text('', 'test', '', '', 10, 4);
 
         $forms->verification();
     }
 
-    public function testGenerateForms()
+    public function testGetForms()
     {
-        $viewMock = new View();
-        $forms = new Forms($viewMock, ['test' => 'a']);
+        $forms = new Forms(['test' => 'a']);
 
         $forms->text('', 'test', '', '', 10, 4);
 
-        $content = $forms->generateForms();
+        $content = $forms->getForms();
 
-        $this->assertEquals('<label>Translated test <input class="" minlength="4" maxlength="10" type="text" name="test" > </label>', $content);
+        $this->assertEquals('<input class="" minlength="4" maxlength="10" type="text" name="test">', $content[0]['html']);
     }
 }
