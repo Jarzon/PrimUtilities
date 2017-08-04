@@ -19,33 +19,26 @@ class Forms
     {
         $row = ['type' => $type, 'name' => $name, 'class' => $class];
 
-        if($type === 'radio' || $type === 'select') {
-            $row['value'] = $value;
-
-            if($selected !== false) {
-                $row['selected'] = $selected;
+        if($min !== false && $max !== false) {
+            if($type == 'text' || $type == 'password' || $type == 'email') {
+                $attributes['minlength'] = $min;
+                $attributes['maxlength'] = $max;
             }
+            else if($type == 'number' || $type == 'float') {
+                $attributes['min'] = $min;
+                $attributes['max'] = $max;
+            }
+
+            $row['min'] = $min;
+            $row['max'] = $max;
         }
-        else {
+
+        if($class != '') {
             $attributes['class'] = $class;
+        }
 
-            if($min !== false && $max !== false) {
-                if($type == 'text' || $type == 'password' || $type == 'email') {
-                    $attributes['minlength'] = $min;
-                    $attributes['maxlength'] = $max;
-                }
-                else if($type == 'number' || $type == 'float') {
-                    $attributes['min'] = $min;
-                    $attributes['max'] = $max;
-                }
-
-                $row['min'] = $min;
-                $row['max'] = $max;
-            }
-
-            if($step !== false) {
-                $attributes['step'] = $step;
-            }
+        if($step !== false) {
+            $attributes['step'] = $step;
         }
 
         if($label === '') {
@@ -54,19 +47,41 @@ class Forms
             $row['label'] = $label;
         }
 
-        if($type == 'float') $type = 'number';
+        if($type != 'select') {
+            $attributes['type'] = $type;
+            if($value !== '') $attributes['value'] = $value;
+        }
+        else if($type == 'float') {
+            $type = 'number';
+        }
 
-        $attributes['type'] = $type;
         $attributes['name'] = $name;
-        if($value !== '') $attributes['value'] = $value;
 
-        $row['html'] = '<input';
+        if($type == 'select') {
+            $row['html'] = '<select';
+        } else {
+            $row['html'] = '<input';
+        }
 
-        foreach($attributes as $attribute => $value) {
-            $row['html'] .= " $attribute=\"$value\"";
+        foreach($attributes as $attribute => $attrValue) {
+            $row['html'] .= " $attribute=\"$attrValue\"";
         }
 
         $row['html'] .= '>';
+
+        if($type == 'select') {
+            foreach($value as $index => $attrValue) {
+                $row['html'] .= "<option value=\"$attrValue\"";
+
+                if($selected == $attrValue) {
+                    $row['html'] .= " selected";
+                }
+
+                $row['html'] .= ">$index</option>";
+            }
+
+            $row['html'] .= '</select>';
+        }
 
         return $row;
     }
@@ -201,52 +216,5 @@ class Forms
     public function getForms() : array
     {
         return $this->forms;
-    }
-
-    public function generateForms() : string
-    {
-        ob_start();
-
-        foreach($this->forms as $form) {
-
-            if($form['type'] == 'radio') { ?>
-                <div <?=isset($form['class'])? 'class="'.$form['class'].'"': ''?>>
-                    <?php foreach($form['value'] as $index => $row) { ?>
-                        <label>
-                            <input type="<?=$form['type']?>" name="<?=$form['name']?>" value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'checked': ''?>>
-                            <?=$index?>
-                        </label>
-                    <?php } ?>
-                </div>
-            <?php } else { ?>
-                <?php if(isset($form['label'])) { ?>
-                    <label><?=$form['label']?>
-                <?php }
-                if($form['type'] == 'select') { ?>
-                    <select
-                        <?php foreach($form['attributes'] as $index => $row) { ?>
-                            <?=$index?>="<?=$row?>"
-                        <?php } ?>
-                    >
-                        <?php foreach($form['value'] as $index => $row) { ?>
-                            <option value="<?=$row?>" <?=(isset($form['selected']) && $form['selected'] == $row)? 'selected': ''?>><?=$index?></option>
-                        <?php } ?>
-                    </select>
-                <?php } else { ?>
-                    <input
-                    <?php foreach($form['attributes'] as $index => $row) { ?>
-                        <?=$index?>="<?=$row?>"
-                    <?php } ?>
-                    >
-                <?php } ?>
-                <?= isset($form['label'])? '</label>': ''; ?>
-                <?php
-            }
-        }
-
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        return trim(preg_replace('/\s+/', ' ', $content));
     }
 }
