@@ -44,7 +44,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input class="" minlength="4" maxlength="10" type="text" name="test">', $content[0]['html']);
+        $this->assertEquals('<input minlength="4" maxlength="10" type="text" name="test">', $content[0]['html']);
     }
 
     public function testGetFormsNumber()
@@ -55,7 +55,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input class="" min="4" max="10" step="1" type="number" name="test">', $content[0]['html']);
+        $this->assertEquals('<input min="4" max="10" step="1" type="number" name="test">', $content[0]['html']);
     }
 
     public function testGetFormsSelect()
@@ -67,5 +67,16 @@ class FormsTest extends TestCase
         $content = $forms->getForms();
 
         $this->assertEquals('<select name="test"><option value="test" selected>test</option></select>', $content[0]['html']);
+    }
+
+    public function testGetFormsRadio()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms->radio('test', 'test', ['test' => 'test'], 'test');
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<lable><input type="radio" name="test" value="test" checked> test</lable>', $content[0]['html']);
     }
 }

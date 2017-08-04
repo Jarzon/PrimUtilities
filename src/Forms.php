@@ -57,6 +57,22 @@ class Forms
 
         $attributes['name'] = $name;
 
+        $row['html'] = '';
+
+        if($type == 'radio') {
+            foreach($value as $index => $attrValue) {
+                $row['html'] .= "<lable><input type=\"$type\" name=\"$name\" value=\"$attrValue\"";
+
+                if($selected == $attrValue) {
+                    $row['html'] .= " checked";
+                }
+
+                $row['html'] .= "> $index</lable>";
+            }
+
+            return $row;
+        }
+
         if($type == 'select') {
             $row['html'] = '<select';
         } else {
