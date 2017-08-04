@@ -59,7 +59,7 @@ class Forms
 
         $row['html'] = '';
 
-        if($type == 'radio') {
+        if($type == 'radio' || $type == 'checkbox' ) {
             foreach($value as $index => $attrValue) {
                 $row['html'] .= "<lable><input type=\"$type\" name=\"$name\" value=\"$attrValue\"";
 
@@ -159,6 +159,11 @@ class Forms
     public function radio(string $name, string $class = '', array $value = [], string $selected = '')
     {
         $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, [], false, $selected);
+    }
+
+    public function checkbox(string $name, string $class = '', array $value = [], string $selected = '')
+    {
+        $this->forms[] = $this->row('checkbox', false, $name, $class, $value, false, false, [], false, $selected);
     }
 
     public function verification() : array

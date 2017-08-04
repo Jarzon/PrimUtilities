@@ -79,4 +79,15 @@ class FormsTest extends TestCase
 
         $this->assertEquals('<lable><input type="radio" name="test" value="test" checked> test</lable>', $content[0]['html']);
     }
+
+    public function testGetFormsCheckbox()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms->checkbox('test', 'test', ['test' => 'test'], 'test');
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<lable><input type="checkbox" name="test" value="test" checked> test</lable>', $content[0]['html']);
+    }
 }
