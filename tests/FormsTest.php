@@ -66,7 +66,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="test"><option value="test" selected>test</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="test"><option value="test" selected="selected">test</option></select>', $content[0]['html']);
     }
 
     public function testGetFormsRadio()
@@ -77,7 +77,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<lable><input type="radio" name="test" value="test" checked> test</lable>', $content[0]['html']);
+        $this->assertEquals('<input type="radio" name="test" value="test" checked="checked">', $content[0]['html'][0]['input']);
     }
 
     public function testGetFormsCheckbox()
@@ -88,6 +88,6 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<lable><input type="checkbox" name="test" value="test" checked> test</lable>', $content[0]['html']);
+        $this->assertEquals('<input type="checkbox" name="test" value="test" checked="checked">', $content[0]['html'][0]['input']);
     }
 }

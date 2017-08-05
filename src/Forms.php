@@ -47,7 +47,7 @@ class Forms
             $row['label'] = $label;
         }
 
-        if($type != 'select') {
+        if($type != 'select' && $type != 'radio' && $type != 'checkbox' ) {
             $attributes['type'] = $type;
             if($value !== '') $attributes['value'] = $value;
         }
@@ -57,49 +57,60 @@ class Forms
 
         $attributes['name'] = $name;
 
-        $row['html'] = '';
-
         if($type == 'radio' || $type == 'checkbox' ) {
+            $row['html'] = [];
+
             foreach($value as $index => $attrValue) {
-                $row['html'] .= "<lable><input type=\"$type\" name=\"$name\" value=\"$attrValue\"";
+                $attr = ['type' => $type, 'name' => $name, 'value' => $attrValue];
 
                 if($selected == $attrValue) {
-                    $row['html'] .= " checked";
+                    $attr['checked'] = 'checked';
                 }
 
-                $row['html'] .= "> $index</lable>";
+                $row['html'][] = ['label' => $index, 'input' => $this->generateTag('input', $attr)];
             }
 
             return $row;
         }
 
         if($type == 'select') {
-            $row['html'] = '<select';
-        } else {
-            $row['html'] = '<input';
-        }
+            $content = '';
 
-        foreach($attributes as $attribute => $attrValue) {
-            $row['html'] .= " $attribute=\"$attrValue\"";
-        }
-
-        $row['html'] .= '>';
-
-        if($type == 'select') {
             foreach($value as $index => $attrValue) {
-                $row['html'] .= "<option value=\"$attrValue\"";
+                $attr = ['value' => $attrValue];
 
                 if($selected == $attrValue) {
-                    $row['html'] .= " selected";
+                    $attr['selected'] = 'selected';
                 }
 
-                $row['html'] .= ">$index</option>";
+                $content .= $this->generateTag('option', $attr, $index);
             }
 
-            $row['html'] .= '</select>';
+            $row['html'] = $this->generateTag('select', $attributes, $content);
+
+            return $row;
         }
 
+        $row['html'] = $this->generateTag('input', $attributes);
+
         return $row;
+    }
+
+    public function generateTag(string $tag, array $attributes, string $content = '') : string
+    {
+        $attr = '';
+
+        foreach($attributes as $attribute => $value) {
+            $attr .= " $attribute=\"$value\"";
+        }
+
+        $html = "<$tag$attr>";
+
+        if($content != '') {
+            $html .= "$content</$tag>";
+        }
+
+        return $html;
     }
 
     public function hidden(string $name, string $value = '', $max = false, array $attributes = [])
