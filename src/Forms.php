@@ -104,7 +104,7 @@ class Forms
 
     public function hidden(string $name, string $value = '', $max = false, array $attributes = [])
     {
-        $this->forms[] = $this->row('password', false, $name, '', $value, $max, 0, '', $attributes);
+        $this->forms[] = $this->row('hidden', false, $name, '', $value, $max, 0, '', $attributes);
     }
 
     public function text($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
