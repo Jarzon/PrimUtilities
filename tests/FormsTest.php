@@ -82,6 +82,17 @@ class FormsTest extends TestCase
         $this->assertEquals('<input min="4" max="10" step="1" type="number" name="test">', $content[0]['html']);
     }
 
+    public function testGetFormsFloat()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms->float('', 'test', '', '', 10, 4);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input min="4" max="10" step="0.01" type="number" name="test">', $content[0]['html']);
+    }
+
     public function testGetFormsSelect()
     {
         $forms = new Forms(['test' => 'a']);
