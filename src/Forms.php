@@ -50,11 +50,12 @@ class Forms
         if($type == 'select' || $type == 'radio' || $type == 'checkbox') {
             $row['value'] = $value;
         } else {
+            if($type == 'float') {
+                $type = 'number';
+            }
+
             $attributes['type'] = $type;
             if($value !== '') $attributes['value'] = $value;
-        }
-        if($type == 'float') {
-            $type = 'number';
         }
 
         $attributes['name'] = $name;
