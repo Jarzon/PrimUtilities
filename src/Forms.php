@@ -69,11 +69,8 @@ class Forms
 
                 $row['html'][] = ['label' => $index, 'input' => $this->generateTag('input', $attr)];
             }
-
-            return $row;
         }
-
-        if($type == 'select') {
+        else if($type == 'select') {
             $content = '';
 
             foreach($value as $index => $attrValue) {
@@ -87,11 +84,10 @@ class Forms
             }
 
             $row['html'] = $this->generateTag('select', $attributes, $content);
-
-            return $row;
         }
-
-        $row['html'] = $this->generateTag('input', $attributes);
+        else {
+            $row['html'] = $this->generateTag('input', $attributes);
+        }
 
         return $row;
     }
@@ -179,11 +175,10 @@ class Forms
 
     public function verification() : array
     {
-        $post = $this->post;
         $params = [];
 
         foreach($this->forms as $input) {
-            $value = $post[$input['name']];
+            $value = $this->post[$input['name']];
 
             if($input['type'] == 'number') {
                 $value = (int)$value;
@@ -222,7 +217,7 @@ class Forms
                 // TODO: Validate that the value is in the list
             }
             else if($input['type'] == 'checkbox') {
-                if(isset($post[$input['name']])) {
+                if(isset($this->post[$input['name']])) {
                     $value = true;
                 } else {
                     $value = false;
