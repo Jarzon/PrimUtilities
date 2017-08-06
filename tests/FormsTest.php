@@ -36,6 +36,30 @@ class FormsTest extends TestCase
         $forms->verification();
     }
 
+    /**
+     * @expectedException     \Exception
+     * @expectedExceptionMessage error
+     */
+    public function testRadioUserValueException()
+    {
+        $forms = new Forms(['test' => '123456789ab']);
+
+        $forms->radio('test', 'test', ['test' => 'test'], 'test');
+
+        $forms->verification();
+    }
+
+    public function testRadioUserValue()
+    {
+        $forms = new Forms(['test' => 'test']);
+
+        $forms->radio('test', 'test', ['test' => 'test'], 'test');
+
+        $values = $forms->verification();
+
+        $this->assertEquals('test', $values[0]);
+    }
+
     public function testGetFormsText()
     {
         $forms = new Forms(['test' => 'a']);

@@ -47,11 +47,13 @@ class Forms
             $row['label'] = $label;
         }
 
-        if($type != 'select' && $type != 'radio' && $type != 'checkbox' ) {
+        if($type == 'select' || $type == 'radio' || $type == 'checkbox') {
+            $row['value'] = $value;
+        } else {
             $attributes['type'] = $type;
             if($value !== '') $attributes['value'] = $value;
         }
-        else if($type == 'float') {
+        if($type == 'float') {
             $type = 'number';
         }
 
@@ -214,7 +216,18 @@ class Forms
                 }
             }
             else if($input['type'] == 'select' || $input['type'] == 'radio') {
-                // TODO: Validate that the value is in the list
+                $exist = false;
+
+                foreach($input['value'] as $inputValue) {
+                    var_dump($inputValue);
+                    if($value == $inputValue) {
+                        $exist = true;
+                    }
+                }
+
+                if(!$exist) {
+                    throw new \Exception('error');
+                }
             }
             else if($input['type'] == 'checkbox') {
                 if(isset($this->post[$input['name']])) {
