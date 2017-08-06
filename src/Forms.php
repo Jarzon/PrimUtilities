@@ -220,7 +220,6 @@ class Forms
                 $exist = false;
 
                 foreach($input['value'] as $inputValue) {
-                    var_dump($inputValue);
                     if($value == $inputValue) {
                         $exist = true;
                     }
