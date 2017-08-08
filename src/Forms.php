@@ -17,7 +17,7 @@ class Forms
 
     protected function row(string $type, $label, string $name, string $class, $value, $max, $min, array $attributes = [], $step = false, $selected = false) : array
     {
-        $row = ['type' => $type, 'name' => $name, 'class' => $class];
+        $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value, 'selected' => $selected];
 
         if($min !== false && $max !== false) {
             if($type == 'text' || $type == 'password' || $type == 'email') {
@@ -47,50 +47,19 @@ class Forms
             $row['label'] = $label;
         }
 
-        if($type == 'select' || $type == 'radio' || $type == 'checkbox') {
-            $row['value'] = $value;
-        } else {
+        if($type != 'select' && $type != 'radio' && $type != 'checkbox') {
             if($type == 'float') {
                 $type = 'number';
             }
 
             $attributes['type'] = $type;
+
             if($value !== '') $attributes['value'] = $value;
         }
 
         $attributes['name'] = $name;
 
-        if($type == 'radio' || $type == 'checkbox' ) {
-            $row['html'] = [];
-
-            foreach($value as $index => $attrValue) {
-                $attr = ['type' => $type, 'name' => $name, 'value' => $attrValue];
-
-                if($selected == $attrValue) {
-                    $attr['checked'] = 'checked';
-                }
-
-                $row['html'][] = ['label' => $index, 'input' => $this->generateTag('input', $attr)];
-            }
-        }
-        else if($type == 'select') {
-            $content = '';
-
-            foreach($value as $index => $attrValue) {
-                $attr = ['value' => $attrValue];
-
-                if($selected == $attrValue) {
-                    $attr['selected'] = 'selected';
-                }
-
-                $content .= $this->generateTag('option', $attr, $index);
-            }
-
-            $row['html'] = $this->generateTag('select', $attributes, $content);
-        }
-        else {
-            $row['html'] = $this->generateTag('input', $attributes);
-        }
+        $row['attributes'] = $attributes;
 
         return $row;
     }
@@ -110,6 +79,50 @@ class Forms
         }
 
         return $html;
+    }
+
+    public function generateInput(array $input)
+    {
+        if($input['type'] == 'radio' || $input['type'] == 'checkbox' ) {
+            $html = [];
+
+            foreach($input['value'] as $index => $attrValue) {
+                $attr = ['type' => $input['type'], 'name' => $input['name'], 'value' => $attrValue];
+
+                if($input['selected'] == $attrValue) {
+                    $attr['checked'] = 'checked';
+                }
+
+                $html[] = ['label' => $index, 'input' => $this->generateTag('input', $attr)];
+            }
+        }
+        else if($input['type'] == 'select') {
+            $content = '';
+
+            foreach($input['value'] as $index => $attrValue) {
+                $attr = ['value' => $attrValue];
+
+                if($input['selected'] == $attrValue) {
+                    $attr['selected'] = 'selected';
+                }
+
+                $content .= $this->generateTag('option', $attr, $index);
+            }
+
+            $html = $this->generateTag('select', $input['attributes'], $content);
+        }
+        else {
+            $html = $this->generateTag('input', $input['attributes']);
+        }
+
+        return $html;
+    }
+
+    public function generateInputs()
+    {
+        foreach ($this->forms as $index => &$form) {
+            $this->forms[$index]['html'] = $this->generateInput($form);
+        }
     }
 
     public function hidden(string $name, string $value = '', $max = false, array $attributes = [])
@@ -255,6 +268,8 @@ class Forms
 
     public function getForms() : array
     {
+        $this->generateInputs();
+
         return $this->forms;
     }
 }
