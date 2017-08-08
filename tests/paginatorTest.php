@@ -25,7 +25,7 @@ class PaginatorTest extends TestCase
      */
     public function testGetFirstPageElement($pagination)
     {
-        $this->assertEquals(0, $pagination->getFirstPageElement());
+        $this->assertEquals(1, $pagination->getFirstPageElement());
     }
 
     /**
@@ -50,7 +50,7 @@ class PaginatorTest extends TestCase
      */
     public function testReverseGetFirstPageElement($pagination)
     {
-        $this->assertEquals(80, $pagination->getFirstPageElement());
+        $this->assertEquals(81, $pagination->getFirstPageElement());
     }
 
     /**

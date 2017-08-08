@@ -56,7 +56,7 @@ class Paginator
             $result = $this->numberOfElements - ($result + $this->elementsPerPages);
         }
 
-        return $result;
+        return $result + 1;
     }
 
     function getLast() : int
