@@ -125,4 +125,39 @@ class FormsTest extends TestCase
 
         $this->assertEquals('<input type="checkbox" name="test" value="test" checked="checked">', $content[0]['html'][0]['input']);
     }
+
+    public function testUpdateValue()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms->text('', 'test', '', 'wrong', 10, 4);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input minlength="4" maxlength="10" type="text" value="wrong" name="test">', $content[0]['html']);
+
+        $forms->updateValue('test', 'good');
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input minlength="4" maxlength="10" type="text" value="good" name="test">', $content[0]['html']);
+    }
+
+    public function testUpdateValueSelect()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms->select('', 'fruits', '', ['apples' => 'apples', 'oranges' => 'oranges'], 'apples');
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<select name="fruits"><option value="apples" selected="selected">apples</option><option value="oranges">oranges</option></select>', $content[0]['html']);
+
+        $forms->updateValue('fruits', 'oranges');
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected="selected">oranges</option></select>', $content[0]['html']);
+
+    }
 }

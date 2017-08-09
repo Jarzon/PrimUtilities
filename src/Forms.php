@@ -64,6 +64,21 @@ class Forms
         return $row;
     }
 
+    public function updateValue(string $name, $value) {
+        foreach ($this->forms as &$form) {
+            if($form['name'] == $name) {
+                if($form['type'] == 'select' || $form['type'] == 'radio' || $form['type'] == 'checkbox') {
+                    $form['selected'] = $value;
+                } else {
+                    $form['value'] = $value;
+                    $form['attributes']['value'] = $value;
+                }
+
+                return;
+            }
+        }
+    }
+
     public function generateTag(string $tag, array $attributes, string $content = '') : string
     {
         $attr = '';
