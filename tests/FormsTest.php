@@ -143,17 +143,17 @@ class FormsTest extends TestCase
         $this->assertEquals('<input minlength="4" maxlength="10" type="text" value="good" name="test">', $content[0]['html']);
     }
 
-    public function testUpdateValueSelect()
+    public function testUpdateValuesSelect()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->select('', 'fruits', '', ['apples' => 'apples', 'oranges' => 'oranges'], 'apples');
+        $forms->select('', 'fruits', '', ['apples' => 'apples', 'oranges' => 'oranges']);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="fruits"><option value="apples" selected="selected">apples</option><option value="oranges">oranges</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges">oranges</option></select>', $content[0]['html']);
 
-        $forms->updateValue('fruits', 'oranges');
+        $forms->updateValues(['fruits' => 'oranges']);
 
         $content = $forms->getForms();
 

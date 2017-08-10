@@ -64,6 +64,16 @@ class Forms
         return $row;
     }
 
+    public function updateValues(array $values = []) {
+        if(empty($values)) {
+            $values = $this->post;
+        }
+
+        foreach ($values as $name => $value) {
+            $this->updateValue($name, $value);
+        }
+    }
+
     public function updateValue(string $name, $value) {
         foreach ($this->forms as &$form) {
             if($form['name'] == $name) {
