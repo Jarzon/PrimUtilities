@@ -19,6 +19,10 @@ class FileCache
     {
         $location = $this->getFileLocation($file);
 
+        if(!file_exists($location)) {
+            return touch($location);
+        }
+
         return file_put_contents($location, serialize($data));
     }
 
