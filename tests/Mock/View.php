@@ -10,7 +10,7 @@ Class View extends \Prim\View {
     {
         $this->messages = [
             'languages' => ['en', 'fr'],
-            'test' => ['Translated test', 'Test']
+            'test' => ['Translated test', 'Test traduit']
         ];
 
         $this->setMessagesLanguage();

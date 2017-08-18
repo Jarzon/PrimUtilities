@@ -28,4 +28,13 @@ class LocalizationTest extends TestCase
     {
         $this->assertEquals('Translated test', $view->translate('test'));
     }
+
+    /**
+     * @depends testGetLanguage
+     */
+    public function testSetLanguage($view)
+    {
+        $view->setLanguage('fr');
+        $this->assertEquals('Test traduit', $view->translate('test'));
+    }
 }

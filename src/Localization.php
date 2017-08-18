@@ -37,6 +37,7 @@ trait Localization
     function setLanguage(string $language)
     {
         $this->language = $language;
+        $this->setMessagesLanguage();
     }
 
     function setMessagesLanguage()
