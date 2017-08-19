@@ -54,7 +54,7 @@ class Forms
 
             $attributes['type'] = $type;
 
-            if($value !== '') $attributes['value'] = $value;
+            if($value !== '' && $type != 'file') $attributes['value'] = $value;
         }
 
         $attributes['name'] = $name;
@@ -214,12 +214,26 @@ class Forms
         $this->forms[] = $this->row('checkbox', false, $name, $class, $value, false, false, [], false, $selected);
     }
 
+    public function file(string $label, string $name, string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
+    {
+        if($multiple) {
+            $attributes['multiple'] = 'multiple';
+        }
+        if(!empty($accept)) {
+            $attributes['accept'] = implode(', ', $accept);
+        }
+
+        $this->forms[] = $this->row('file', $label, $name, $class, $accept, false, false, $attributes, false, '');
+    }
+
     public function verification() : array
     {
         $params = [];
 
         foreach($this->forms as $input) {
-            $value = $this->post[$input['name']];
+            if($input['type'] != 'file') {
+                $value = $this->post[$input['name']];
+            }
 
             if($input['type'] == 'number') {
                 $value = (int)$value;
@@ -284,11 +298,53 @@ class Forms
                     throw new \Exception($input['name'] . ' is not a valid url');
                 }
             }
+            else if($input['type'] == 'file') {
+                $infos = [];
+
+                if(isset($input['attributes']['multiple'])) {
+                    foreach ($_FILES[$input['name']]['error'] AS $index => $error) {
+                        $this->fileErrors($error);
+
+                        $infos[] = [
+                            'name' => $_FILES[$input['name']]['name'][$index],
+                            'type' => $_FILES[$input['name']]['type'][$index],
+                            'location' => $_FILES[$input['name']]['tmp_name'][$index],
+                            'size' => $_FILES[$input['name']]['size'][$index],
+                        ];
+                    }
+                } else {
+                    $this->fileErrors($_FILES[$input['name']]['error']);
+
+                    $infos = [
+                        'name' => $_FILES[$input['name']]['name'],
+                        'type' => $_FILES[$input['name']]['type'],
+                        'location' => $_FILES[$input['name']]['tmp_name'],
+                        'size' => $_FILES[$input['name']]['size']
+                    ];
+                }
+
+                $value = $infos;
+            }
 
             $params[] = $value;
         }
 
         return $params;
+    }
+
+    private function fileErrors($error)
+    {
+        switch ($error) {
+            case UPLOAD_ERR_OK:
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                throw new \Exception('no file sent');
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                throw new \Exception('exceeded filesize limit');
+            default:
+                throw new \Exception('unknown errors');
+        }
     }
 
     public function getForms() : array

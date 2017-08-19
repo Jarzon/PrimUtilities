@@ -60,6 +60,25 @@ class FormsTest extends TestCase
         $this->assertEquals('test', $values[0]);
     }
 
+    public function testFileValue()
+    {
+        $_FILES['test'] = [
+            'name' => UPLOAD_ERR_OK,
+            'type' => UPLOAD_ERR_OK,
+            'tmp_name' => UPLOAD_ERR_OK,
+            'size' => UPLOAD_ERR_OK,
+            'error' => UPLOAD_ERR_OK,
+        ];
+
+        $forms = new Forms(['test' => '']);
+
+        $forms->file('', 'test', '', false, ['.jpg', '.jpeg']);
+
+        $values = $forms->verification();
+
+        $this->assertEquals('0', $values[0]['location']);
+    }
+
     public function testGetFormsText()
     {
         $forms = new Forms(['test' => 'a']);
@@ -159,5 +178,16 @@ class FormsTest extends TestCase
 
         $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected="selected">oranges</option></select>', $content[0]['html']);
 
+    }
+
+    public function testGetFormsFile()
+    {
+        $forms = new Forms([]);
+
+        $forms->file('', 'test', '', true, ['.jpg', '.jpeg']);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input multiple="multiple" accept=".jpg, .jpeg" type="file" name="test">', $content[0]['html']);
     }
 }
