@@ -313,6 +313,10 @@ class Forms
                         ];
                     }
                 } else {
+                    if(is_array($_FILES[$input['name']]['error'])) {
+                        throw new \Exception('bypassed multiple limitation');
+                    }
+
                     $this->fileErrors($_FILES[$input['name']]['error']);
 
                     $infos = [
@@ -326,7 +330,7 @@ class Forms
                 $value = $infos;
             }
 
-            $params[] = $value;
+            $params[] = $value; // TODO: Add the input name as the key for the v1
         }
 
         return $params;
@@ -344,6 +348,19 @@ class Forms
                 throw new \Exception('exceeded filesize limit');
             default:
                 throw new \Exception('unknown errors');
+        }
+    }
+
+    private function fileMove($tmp_name, $ext)
+    {
+        if (!move_uploaded_file(
+            $tmp_name,
+            sprintf('./uploads/%s.%s',
+                sha1_file($tmp_name),
+                $ext
+            )
+        )) {
+            throw new \Exception('failed to move uploaded file');
         }
     }
 
