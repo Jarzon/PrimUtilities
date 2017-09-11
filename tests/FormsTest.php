@@ -90,6 +90,17 @@ class FormsTest extends TestCase
         $this->assertEquals('<input minlength="4" maxlength="10" type="text" name="test">', $content[0]['html']);
     }
 
+    public function testGetFormsTextarea()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms->textarea('', 'test', '', '', 500, 0);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<textarea minlength="0" maxlength="500" name="test"></textarea>', $content[0]['html']);
+    }
+
     public function testGetFormsNumber()
     {
         $forms = new Forms(['test' => 'a']);

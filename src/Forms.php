@@ -20,7 +20,7 @@ class Forms
         $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value, 'selected' => $selected];
 
         if($min !== false && $max !== false) {
-            if($type == 'text' || $type == 'password' || $type == 'email') {
+            if($type == 'text' || $type == 'password' || $type == 'email' || $type == 'textarea') {
                 $attributes['minlength'] = $min;
                 $attributes['maxlength'] = $max;
             }
@@ -47,7 +47,7 @@ class Forms
             $row['label'] = $label;
         }
 
-        if($type != 'select' && $type != 'radio' && $type != 'checkbox') {
+        if($type != 'select' && $type != 'radio' && $type != 'checkbox' && $type != 'textarea') {
             if($type == 'float') {
                 $type = 'number';
             }
@@ -89,7 +89,7 @@ class Forms
         }
     }
 
-    public function generateTag(string $tag, array $attributes, string $content = '') : string
+    public function generateTag(string $tag, array $attributes, $content = false) : string
     {
         $attr = '';
 
@@ -99,7 +99,7 @@ class Forms
 
         $html = "<$tag$attr>";
 
-        if($content != '') {
+        if($content !== false) {
             $html .= "$content</$tag>";
         }
 
@@ -136,6 +136,9 @@ class Forms
 
             $html = $this->generateTag('select', $input['attributes'], $content);
         }
+        else if($input['type'] == 'textarea') {
+            $html = $this->generateTag('textarea', $input['attributes'], $input['value']);
+        }
         else {
             $html = $this->generateTag('input', $input['attributes']);
         }
@@ -158,6 +161,11 @@ class Forms
     public function text($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
     {
         $this->forms[] = $this->row('text', $label, $name, $class, $value, $max, $min, $attributes);
+    }
+
+    public function textarea($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
+    {
+        $this->forms[] = $this->row('textarea', $label, $name, $class, $value, $max, $min, $attributes);
     }
 
     public function password($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
