@@ -25,6 +25,21 @@ class FormsTest extends TestCase
 
     /**
      * @expectedException     \Exception
+     * @expectedExceptionMessage test is required
+     */
+    public function testLengthNull()
+    {
+        $forms = new Forms(['test' => '']);
+
+        $forms->text('', 'test', '', '', 10, 4, ['required' => 'required']);
+
+        $forms->verification();
+
+        return $forms;
+    }
+
+    /**
+     * @expectedException     \Exception
      * @expectedExceptionMessage test is too long
      */
     public function testLengthHigherThatMax()

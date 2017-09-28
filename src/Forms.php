@@ -241,6 +241,8 @@ class Forms
         foreach($this->forms as $input) {
             if($input['type'] != 'file') {
                 $value = $this->post[$input['name']];
+            } else {
+                $value = $_FILES;
             }
 
             if($input['type'] == 'number') {
@@ -250,92 +252,97 @@ class Forms
                 $value = (float)$value;
             }
 
-            if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
-                $numberChars = mb_strlen($value);
-                if($numberChars > $input['max'] && $input['max'] != -1) {
-                    throw new \Exception($input['name'] . ' is too long');
-                }
-                else if($numberChars < $input['min']) {
-                    throw new \Exception($input['name'] . ' is too short');
-                }
+            if(isset($input['attributes']['required']) && $value === '') {
+                throw new \Exception($input['name'] . ' is required');
             }
-            else if(($input['type'] == 'number' || $input['type'] == 'float') && isset($input['min']) && isset($input['max'])) {
-                if($value > $input['max'] && $input['max'] != -1) {
-                    throw new \Exception($input['name'] . ' is too high');
-                }
-                else if($value < $input['min'] && $input['min'] != -1) {
-                    throw new \Exception($input['name'] . ' is too low');
-                }
-            }
-            else if($input['type'] == 'date') {
-                // TODO: Be able to change the format for every date and match the $format with pattern
-
-                $format = 'd/m/Y';
-                $d = \DateTime::createFromFormat($format, $value);
-                if(!$d || $d->format($format) != $value) {
-                    throw new \Exception($input['name'] . ' is not a valid date');
-                }
-            }
-            else if($input['type'] == 'select' || $input['type'] == 'radio') {
-                $exist = false;
-
-                foreach($input['value'] as $inputValue) {
-                    if($value == $inputValue) {
-                        $exist = true;
+            else if((!isset($input['attributes']['required']) && $value === '')) {
+                if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
+                    $numberChars = mb_strlen($value);
+                    if($numberChars > $input['max'] && $input['max'] != -1) {
+                        throw new \Exception($input['name'] . ' is too long');
+                    }
+                    else if($numberChars < $input['min']) {
+                        throw new \Exception($input['name'] . ' is too short');
                     }
                 }
+                else if(($input['type'] == 'number' || $input['type'] == 'float') && isset($input['min']) && isset($input['max'])) {
+                    if($value > $input['max'] && $input['max'] != -1) {
+                        throw new \Exception($input['name'] . ' is too high');
+                    }
+                    else if($value < $input['min'] && $input['min'] != -1) {
+                        throw new \Exception($input['name'] . ' is too low');
+                    }
+                }
+                else if($input['type'] == 'date') {
+                    // TODO: Be able to change the format for every date and match the $format with pattern
 
-                if(!$exist) {
-                    throw new \Exception('error');
+                    $format = 'd/m/Y';
+                    $d = \DateTime::createFromFormat($format, $value);
+                    if(!$d || $d->format($format) != $value) {
+                        throw new \Exception($input['name'] . ' is not a valid date');
+                    }
                 }
-            }
-            else if($input['type'] == 'checkbox') {
-                if(isset($this->post[$input['name']])) {
-                    $value = true;
-                } else {
-                    $value = false;
-                }
-            }
-            else if($input['type'] == 'email') {
-                if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    throw new \Exception($input['name'] . ' is not a valid email');
-                }
-            }
-            else if($input['type'] == 'url') {
-                if(!filter_var($value, FILTER_VALIDATE_URL)) {
-                    throw new \Exception($input['name'] . ' is not a valid url');
-                }
-            }
-            else if($input['type'] == 'file') {
-                $infos = [];
+                else if($input['type'] == 'select' || $input['type'] == 'radio') {
+                    $exist = false;
 
-                if(isset($input['attributes']['multiple'])) {
-                    foreach ($_FILES[$input['name']]['error'] AS $index => $error) {
-                        $this->fileErrors($error);
+                    foreach($input['value'] as $inputValue) {
+                        if($value == $inputValue) {
+                            $exist = true;
+                        }
+                    }
 
-                        $infos[] = [
-                            'name' => $_FILES[$input['name']]['name'][$index],
-                            'type' => $_FILES[$input['name']]['type'][$index],
-                            'location' => $_FILES[$input['name']]['tmp_name'][$index],
-                            'size' => $_FILES[$input['name']]['size'][$index],
+                    if(!$exist) {
+                        throw new \Exception('error');
+                    }
+                }
+                else if($input['type'] == 'checkbox') {
+                    if(isset($this->post[$input['name']])) {
+                        $value = true;
+                    } else {
+                        $value = false;
+                    }
+                }
+                else if($input['type'] == 'email') {
+                    if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                        throw new \Exception($input['name'] . ' is not a valid email');
+                    }
+                }
+                else if($input['type'] == 'url') {
+                    if(!filter_var($value, FILTER_VALIDATE_URL)) {
+                        throw new \Exception($input['name'] . ' is not a valid url');
+                    }
+                }
+                else if($input['type'] == 'file') {
+                    $infos = [];
+
+                    if(isset($input['attributes']['multiple'])) {
+                        foreach ($_FILES[$input['name']]['error'] AS $index => $error) {
+                            $this->fileErrors($error);
+
+                            $infos[] = [
+                                'name' => $_FILES[$input['name']]['name'][$index],
+                                'type' => $_FILES[$input['name']]['type'][$index],
+                                'location' => $_FILES[$input['name']]['tmp_name'][$index],
+                                'size' => $_FILES[$input['name']]['size'][$index],
+                            ];
+                        }
+                    } else {
+                        if(is_array($_FILES[$input['name']]['error'])) {
+                            throw new \Exception('bypassed multiple limitation');
+                        }
+
+                        $this->fileErrors($_FILES[$input['name']]['error']);
+
+                        $infos = [
+                            'name' => $_FILES[$input['name']]['name'],
+                            'type' => $_FILES[$input['name']]['type'],
+                            'location' => $_FILES[$input['name']]['tmp_name'],
+                            'size' => $_FILES[$input['name']]['size']
                         ];
                     }
-                } else {
-                    if(is_array($_FILES[$input['name']]['error'])) {
-                        throw new \Exception('bypassed multiple limitation');
-                    }
 
-                    $this->fileErrors($_FILES[$input['name']]['error']);
-
-                    $infos = [
-                        'name' => $_FILES[$input['name']]['name'],
-                        'type' => $_FILES[$input['name']]['type'],
-                        'location' => $_FILES[$input['name']]['tmp_name'],
-                        'size' => $_FILES[$input['name']]['size']
-                    ];
+                    $value = $infos;
                 }
-
-                $value = $infos;
             }
 
             $params[] = $value; // TODO: Add the input name as the key for the v1
