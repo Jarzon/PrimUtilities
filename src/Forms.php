@@ -255,7 +255,7 @@ class Forms
             if(isset($input['attributes']['required']) && $value === '') {
                 throw new \Exception($input['name'] . ' is required');
             }
-            else if((!isset($input['attributes']['required']) && $value === '')) {
+            else if((!isset($input['attributes']['required']) && $value !== '')) {
                 if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
                     $numberChars = mb_strlen($value);
                     if($numberChars > $input['max'] && $input['max'] != -1) {
