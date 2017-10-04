@@ -193,15 +193,18 @@ class Forms
         $this->forms[] = $this->row('float', $label, $name, $class, $value, $max, $min, $attributes, $step);
     }
 
-    public function date($label, string $name, string $class = '', string $value = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}', array $attributes = [])
+    public function date($label, string $name, string $class = '', string $value = '', $pattern = false, array $attributes = [])
     {
-        $attributes['pattern'] = $pattern;
+        if($pattern === false) $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
+        if($pattern !== '') $attributes['pattern'] = $pattern;
 
         $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $attributes);
     }
 
-    public function datetime($label, string $name, string $class = '', string $value = '', string $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}', array $attributes = [])
+    public function datetime($label, string $name, string $class = '', string $value = '', $pattern = false, array $attributes = [])
     {
+        if($pattern === false) $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}';
+        if($pattern !== '') $attributes['pattern'] = $pattern;
         $attributes['pattern'] = $pattern;
 
         $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $attributes);
