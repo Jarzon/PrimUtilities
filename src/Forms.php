@@ -212,14 +212,14 @@ class Forms
         $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, $attributes, false, $selected);
     }
 
-    public function radio(string $name, string $class = '', array $value = [], string $selected = '')
+    public function radio(string $name, string $class = '', array $value = [], string $selected = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, [], false, $selected);
+        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, $attributes, false, $selected);
     }
 
-    public function checkbox(string $name, string $class = '', array $value = [], string $selected = '')
+    public function checkbox(string $name, string $class = '', array $value = [], string $selected = '', array $attributes = [])
     {
-        $this->forms[] = $this->row('checkbox', false, $name, $class, $value, false, false, [], false, $selected);
+        $this->forms[] = $this->row('checkbox', false, $name, $class, $value, false, false, $attributes, false, $selected);
     }
 
     public function file(string $label, string $name, string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
