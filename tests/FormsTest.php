@@ -19,8 +19,6 @@ class FormsTest extends TestCase
         $forms->text('', 'test', '', '', 10, 4);
 
         $forms->verification();
-
-        return $forms;
     }
 
     /**
@@ -34,8 +32,6 @@ class FormsTest extends TestCase
         $forms->text('', 'test', '', '', 10, 4, ['required' => 'required']);
 
         $forms->verification();
-
-        return $forms;
     }
 
     /**
@@ -55,7 +51,7 @@ class FormsTest extends TestCase
      * @expectedException     \Exception
      * @expectedExceptionMessage error
      */
-    public function testRadioUserValueException()
+    public function testRadioValueException()
     {
         $forms = new Forms(['test' => '123456789ab']);
 
@@ -64,7 +60,29 @@ class FormsTest extends TestCase
         $forms->verification();
     }
 
-    public function testRadioUserValue()
+    public function testCheckboxChecked()
+    {
+        $forms = new Forms(['test' => '']);
+
+        $forms->checkbox('test', 'test', 'test');
+
+        $params = $forms->verification();
+
+        $this->assertEquals(true, $params[0]);
+    }
+
+    public function testCheckboxUnchecked()
+    {
+        $forms = new Forms([]);
+
+        $forms->checkbox('test', 'test', 'test');
+
+        $params = $forms->verification();
+
+        $this->assertEquals(false, $params[0]);
+    }
+
+    public function testRadioValue()
     {
         $forms = new Forms(['test' => 'test']);
 
@@ -85,7 +103,7 @@ class FormsTest extends TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $forms = new Forms(['test' => '']);
+        $forms = new Forms([]);
 
         $forms->file('', 'test', '', false, ['.jpg', '.jpeg']);
 
@@ -164,11 +182,11 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->checkbox('test', 'test', ['test' => 'test'], 'test');
+        $forms->checkbox('test', '', 'test', true);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input type="checkbox" name="test" value="test" checked="checked">', $content[0]['html'][0]['input']);
+        $this->assertEquals('<input checked="checked" type="checkbox" value="test" name="test">', $content[0]['html']);
     }
 
     public function testUpdateValue()

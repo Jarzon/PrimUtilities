@@ -47,7 +47,7 @@ class Forms
             $row['label'] = $label;
         }
 
-        if($type != 'select' && $type != 'radio' && $type != 'checkbox' && $type != 'textarea') {
+        if($type != 'select' && $type != 'radio' && $type != 'textarea') {
             if($type == 'float') {
                 $type = 'number';
             }
@@ -77,7 +77,7 @@ class Forms
     public function updateValue(string $name, $value) {
         foreach ($this->forms as &$form) {
             if($form['name'] == $name) {
-                if($form['type'] == 'select' || $form['type'] == 'radio' || $form['type'] == 'checkbox') {
+                if($form['type'] == 'select' || $form['type'] == 'radio') {
                     $form['selected'] = $value;
                 } else {
                     $form['value'] = $value;
@@ -108,7 +108,7 @@ class Forms
 
     public function generateInput(array $input)
     {
-        if($input['type'] == 'radio' || $input['type'] == 'checkbox' ) {
+        if($input['type'] == 'radio') {
             $html = [];
 
             foreach($input['value'] as $index => $attrValue) {
@@ -220,9 +220,13 @@ class Forms
         $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, $attributes, false, $selected);
     }
 
-    public function checkbox(string $name, string $class = '', array $value = [], string $selected = '', array $attributes = [])
+    public function checkbox(string $name, string $class = '', string $value = '', bool $selected = false, array $attributes = [])
     {
-        $this->forms[] = $this->row('checkbox', false, $name, $class, $value, false, false, $attributes, false, $selected);
+        if($selected) {
+            $attributes['checked'] = 'checked';
+        }
+
+        $this->forms[] = $this->row('checkbox', false, $name, $class, $value, false, false, $attributes, false);
     }
 
     public function file(string $label, string $name, string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
@@ -242,16 +246,23 @@ class Forms
         $params = [];
 
         foreach($this->forms as $input) {
-            if($input['type'] != 'file') {
+            if($input['type'] === 'checkbox') {
+                if(isset($this->post[$input['name']])) {
+                    $value = true;
+                } else {
+                    $value = false;
+                }
+            }
+            else if(isset($this->post[$input['name']])) {
                 $value = $this->post[$input['name']];
-            } else {
+            } else if($input['type'] === 'file') {
                 $value = $_FILES;
             }
 
             if($input['type'] == 'number') {
                 $value = (int)$value;
             }
-            if($input['type'] == 'float') {
+            else if($input['type'] == 'float') {
                 $value = (float)$value;
             }
 
@@ -296,13 +307,6 @@ class Forms
 
                     if(!$exist) {
                         throw new \Exception('error');
-                    }
-                }
-                else if($input['type'] == 'checkbox') {
-                    if(isset($this->post[$input['name']])) {
-                        $value = true;
-                    } else {
-                        $value = false;
                     }
                 }
                 else if($input['type'] == 'email') {
