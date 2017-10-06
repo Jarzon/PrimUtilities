@@ -82,6 +82,28 @@ class FormsTest extends TestCase
         $this->assertEquals(false, $params[0]);
     }
 
+    public function testCheckboxCheckedBool()
+    {
+        $forms = new Forms(['test' => '1234']);
+
+        $forms->checkbox('', 'test', 'test', true, false, []);
+
+        $params = $forms->verification();
+
+        $this->assertEquals(true, $params[0]);
+    }
+
+    public function testCheckboxUncheckedBool()
+    {
+        $forms = new Forms([]);
+
+        $forms->checkbox('', 'test', 'test', true, false, []);
+
+        $params = $forms->verification();
+
+        $this->assertEquals(false, $params[0]);
+    }
+
     public function testRadioValue()
     {
         $forms = new Forms(['test' => 'test']);

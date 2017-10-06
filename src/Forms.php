@@ -220,7 +220,7 @@ class Forms
         $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, $attributes, false, $selected);
     }
 
-    public function checkbox($label, string $name, string $class = '', string $value = '', bool $selected = false, array $attributes = [])
+    public function checkbox($label, string $name, string $class = '', $value = '', bool $selected = false, array $attributes = [])
     {
         if($selected) {
             $attributes['checked'] = 'checked';
