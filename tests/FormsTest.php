@@ -62,20 +62,20 @@ class FormsTest extends TestCase
 
     public function testCheckboxChecked()
     {
-        $forms = new Forms(['test' => '']);
+        $forms = new Forms(['test' => '1234']);
 
-        $forms->checkbox('test', 'test', 'test');
+        $forms->checkbox('test', 'test', 'testy');
 
         $params = $forms->verification();
 
-        $this->assertEquals(true, $params[0]);
+        $this->assertEquals('testy', $params[0]);
     }
 
     public function testCheckboxUnchecked()
     {
         $forms = new Forms([]);
 
-        $forms->checkbox('test', 'test', 'test');
+        $forms->checkbox('test', 'test', 'testy');
 
         $params = $forms->verification();
 

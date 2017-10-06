@@ -248,7 +248,7 @@ class Forms
         foreach($this->forms as $input) {
             if($input['type'] === 'checkbox') {
                 if(isset($this->post[$input['name']])) {
-                    $value = true;
+                    $value = $input['value'];
                 } else {
                     $value = false;
                 }
