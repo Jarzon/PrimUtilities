@@ -64,7 +64,7 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => '1234']);
 
-        $forms->checkbox('test', 'test', 'testy');
+        $forms->checkbox('', 'test', 'test', 'testy');
 
         $params = $forms->verification();
 
@@ -75,7 +75,7 @@ class FormsTest extends TestCase
     {
         $forms = new Forms([]);
 
-        $forms->checkbox('test', 'test', 'testy');
+        $forms->checkbox('', 'test', 'test', 'testy');
 
         $params = $forms->verification();
 
@@ -182,7 +182,7 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->checkbox('test', '', 'test', true);
+        $forms->checkbox('', 'test', '', 'test', true);
 
         $content = $forms->getForms();
 
