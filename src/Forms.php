@@ -261,10 +261,10 @@ class Forms
                 }
             }
             else if($input['type'] === 'file') {
-                if(isset($_FILES[$input['name']])) {
+                if(isset($this->post[$input['name']]) && isset($_FILES[$input['name']]) && $this->post[$input['name']] != '') {
                     $value = $_FILES[$input['name']];
                 }
-                else if(!isset($_FILES[$input['name']]) && $this->post[$input['name']] != '') {
+                else if(!isset($_FILES[$input['name']]) && isset($this->post[$input['name']]) && $this->post[$input['name']] != '') {
                     throw new \Exception('form seems to miss enctype attribute');
                 }
             }
@@ -332,7 +332,7 @@ class Forms
                         throw new \Exception($input['name'] . ' is not a valid url');
                     }
                 }
-                else if($input['type'] == 'file' && $this->post[$input['name']] != '') {
+                else if($input['type'] == 'file' && isset($this->post[$input['name']])) {
                     $infos = [];
 
                     // TODO: verify file type

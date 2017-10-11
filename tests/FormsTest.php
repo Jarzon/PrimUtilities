@@ -108,7 +108,7 @@ class FormsTest extends TestCase
             'error' => 0,
         ];
 
-        $forms = new Forms(['test' => '']);
+        $forms = new Forms([]);
 
         $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg'], ['required' => 'required']);
 
