@@ -332,7 +332,7 @@ class Forms
                         throw new \Exception($input['name'] . ' is not a valid url');
                     }
                 }
-                else if($input['type'] == 'file') {
+                else if($input['type'] == 'file' && $this->post[$input['name']] != '') {
                     $infos = [];
 
                     // TODO: verify file type

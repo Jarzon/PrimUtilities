@@ -91,8 +91,6 @@ class FormsTest extends TestCase
 
         $forms->file('', 'test', '', '','', false, ['.jpg', '.jpeg']);
 
-        $values = $forms->verification();
-
         $forms->verification();
     }
 
@@ -102,15 +100,38 @@ class FormsTest extends TestCase
      */
     public function testFileEmptyRequired()
     {
-        $_FILES = [];
+        $_FILES = [
+            'name' => '',
+            'type' => '',
+            'tmp_name' => '',
+            'size' => 4,
+            'error' => 0,
+        ];
 
         $forms = new Forms(['test' => '']);
 
         $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg'], ['required' => 'required']);
 
+        $forms->verification();
+    }
+
+    public function testFileEmpty()
+    {
+        $_FILES = [
+            'name' => '',
+            'type' => '',
+            'tmp_name' => '',
+            'size' => 4,
+            'error' => 0,
+        ];
+
+        $forms = new Forms(['test' => '']);
+
+        $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg']);
+
         $values = $forms->verification();
 
-        $forms->verification();
+        $this->assertEquals('', $values['test']);
     }
 
     public function testCheckboxChecked()
@@ -178,7 +199,7 @@ class FormsTest extends TestCase
             'error' => UPLOAD_ERR_OK,
         ];
 
-        $forms = new Forms([]);
+        $forms = new Forms(['test' => 'test.txt']);
 
         $forms->file('', 'test', vfsStream::url('root/data'), '', '', false, ['.txt', '.text']);
 
