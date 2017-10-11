@@ -229,7 +229,7 @@ class Forms
         $this->forms[] = $this->row('checkbox', $label, $name, $class, $value, false, false, $attributes, false);
     }
 
-    public function file(string $label, string $name, string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
+    public function file(string $label, string $name, string $destination = '', string $ext = '', string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
     {
         if($multiple) {
             $attributes['multiple'] = 'multiple';
@@ -238,7 +238,11 @@ class Forms
             $attributes['accept'] = implode(', ', $accept);
         }
 
-        $this->forms[] = $this->row('file', $label, $name, $class, $accept, false, false, $attributes, false, '');
+        $row = $this->row('file', $label, $name, $class, $accept, false, false, $attributes, false, '');
+        $row['destination'] = $destination;
+        $row['ext'] = $ext;
+
+        $this->forms[] = $row;
     }
 
     public function verification() : array
@@ -330,14 +334,18 @@ class Forms
                 else if($input['type'] == 'file') {
                     $infos = [];
 
+                    // TODO: verify file type
+
                     if(isset($input['attributes']['multiple'])) {
                         foreach ($value['error'] AS $index => $error) {
                             $this->fileErrors($error);
 
+                            $location = $this->fileMove($value['tmp_name'][$index], $input['destination'], $input['ext']);
+
                             $infos[] = [
                                 'name' => $value['name'][$index],
                                 'type' => $value['type'][$index],
-                                'location' => $value['tmp_name'][$index],
+                                'location' => $location,
                                 'size' => $value['size'][$index],
                             ];
                         }
@@ -348,10 +356,12 @@ class Forms
 
                         $this->fileErrors($value['error']);
 
+                        $location = $this->fileMove($value['tmp_name'], $input['destination'], $input['ext']);
+
                         $infos = [
                             'name' => $value['name'],
                             'type' => $value['type'],
-                            'location' => $value['tmp_name'],
+                            'location' => $location,
                             'size' => $value['size']
                         ];
                     }
@@ -381,17 +391,32 @@ class Forms
         }
     }
 
-    private function fileMove($tmp_name, $ext)
+    private function fileMove(string $tmp_name, string $dest, string $ext = '')
     {
-        if (!move_uploaded_file(
+        $file = sprintf('%s/%s',
+            $dest,
+            sha1_file($tmp_name)
+        );
+
+        if($ext != '') {
+            $file .= ".$ext";
+        }
+
+        if (!$this->move_uploaded_file(
             $tmp_name,
-            sprintf('./uploads/%s.%s',
-                sha1_file($tmp_name),
-                $ext
-            )
+            $file
         )) {
             throw new \Exception('failed to move uploaded file');
         }
+
+        return $file;
+    }
+
+    public function move_uploaded_file($tmp_name, $dest) {
+        return move_uploaded_file(
+            $tmp_name,
+            $dest
+        );
     }
 
     public function getForms() : array

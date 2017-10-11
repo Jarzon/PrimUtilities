@@ -4,10 +4,29 @@ declare(strict_types=1);
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use PrimUtilities\Forms;
+use Tests\Mock\Forms;
+
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 
 class FormsTest extends TestCase
 {
+    /**
+     * @var  vfsStreamDirectory
+     */
+    private $root;
+
+    public function setUp()
+    {
+        $this->root = vfsStream::setup('root', null, [
+            'temp' => [
+                'test.txt' => '',
+            ],
+            'data' => [
+            ],
+        ]);
+    }
+
     /**
      * @expectedException     \Exception
      * @expectedExceptionMessage test is too short
@@ -70,7 +89,7 @@ class FormsTest extends TestCase
 
         $forms = new Forms(['test' => 'test.jpg']);
 
-        $forms->file('', 'test', '', false, ['.jpg', '.jpeg']);
+        $forms->file('', 'test', '', '','', false, ['.jpg', '.jpeg']);
 
         $values = $forms->verification();
 
@@ -87,7 +106,7 @@ class FormsTest extends TestCase
 
         $forms = new Forms(['test' => '']);
 
-        $forms->file('', 'test', '', false, ['.jpg', '.jpeg'], ['required' => 'required']);
+        $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg'], ['required' => 'required']);
 
         $values = $forms->verification();
 
@@ -154,18 +173,18 @@ class FormsTest extends TestCase
         $_FILES['test'] = [
             'name' => UPLOAD_ERR_OK,
             'type' => UPLOAD_ERR_OK,
-            'tmp_name' => UPLOAD_ERR_OK,
+            'tmp_name' => vfsStream::url('root/temp/test.txt'),
             'size' => UPLOAD_ERR_OK,
             'error' => UPLOAD_ERR_OK,
         ];
 
         $forms = new Forms([]);
 
-        $forms->file('', 'test', '', false, ['.jpg', '.jpeg']);
+        $forms->file('', 'test', vfsStream::url('root/data'), '', '', false, ['.txt', '.text']);
 
         $values = $forms->verification();
 
-        $this->assertEquals('0', $values[0]['location']);
+        $this->assertTrue(file_exists('vfs://root/data/da39a3ee5e6b4b0d3255bfef95601890afd80709'));
     }
 
     public function testGetFormsText()
@@ -284,7 +303,7 @@ class FormsTest extends TestCase
     {
         $forms = new Forms([]);
 
-        $forms->file('', 'test', '', true, ['.jpg', '.jpeg']);
+        $forms->file('', 'test', '', '', '', true, ['.jpg', '.jpeg']);
 
         $content = $forms->getForms();
 
