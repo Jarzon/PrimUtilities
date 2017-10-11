@@ -60,6 +60,40 @@ class FormsTest extends TestCase
         $forms->verification();
     }
 
+    /**
+     * @expectedException     \Exception
+     * @expectedExceptionMessage form seems to miss enctype attribute
+     */
+    public function testFileFormMissingEnctype()
+    {
+        $_FILES = [];
+
+        $forms = new Forms(['test' => 'test.jpg']);
+
+        $forms->file('', 'test', '', false, ['.jpg', '.jpeg']);
+
+        $values = $forms->verification();
+
+        $forms->verification();
+    }
+
+    /**
+     * @expectedException     \Exception
+     * @expectedExceptionMessage test is required
+     */
+    public function testFileEmptyRequired()
+    {
+        $_FILES = [];
+
+        $forms = new Forms(['test' => '']);
+
+        $forms->file('', 'test', '', false, ['.jpg', '.jpeg'], ['required' => 'required']);
+
+        $values = $forms->verification();
+
+        $forms->verification();
+    }
+
     public function testCheckboxChecked()
     {
         $forms = new Forms(['test' => '1234']);

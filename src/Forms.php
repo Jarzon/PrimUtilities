@@ -246,6 +246,8 @@ class Forms
         $params = [];
 
         foreach($this->forms as $input) {
+            $value = '';
+
             if($input['type'] === 'checkbox') {
                 if(isset($this->post[$input['name']])) {
                     $value = $input['value'];
@@ -253,10 +255,16 @@ class Forms
                     $value = false;
                 }
             }
+            else if($input['type'] === 'file') {
+                if(isset($_FILES[$input['name']])) {
+                    $value = $_FILES[$input['name']];
+                }
+                else if(!isset($_FILES[$input['name']]) && $this->post[$input['name']] != '') {
+                    throw new \Exception('form seems to miss enctype attribute');
+                }
+            }
             else if(isset($this->post[$input['name']])) {
                 $value = $this->post[$input['name']];
-            } else if($input['type'] === 'file') {
-                $value = $_FILES;
             }
 
             if($input['type'] == 'number') {
@@ -323,28 +331,28 @@ class Forms
                     $infos = [];
 
                     if(isset($input['attributes']['multiple'])) {
-                        foreach ($_FILES[$input['name']]['error'] AS $index => $error) {
+                        foreach ($value['error'] AS $index => $error) {
                             $this->fileErrors($error);
 
                             $infos[] = [
-                                'name' => $_FILES[$input['name']]['name'][$index],
-                                'type' => $_FILES[$input['name']]['type'][$index],
-                                'location' => $_FILES[$input['name']]['tmp_name'][$index],
-                                'size' => $_FILES[$input['name']]['size'][$index],
+                                'name' => $value['name'][$index],
+                                'type' => $value['type'][$index],
+                                'location' => $value['tmp_name'][$index],
+                                'size' => $value['size'][$index],
                             ];
                         }
                     } else {
-                        if(is_array($_FILES[$input['name']]['error'])) {
+                        if(is_array($value['error'])) {
                             throw new \Exception('bypassed multiple limitation');
                         }
 
-                        $this->fileErrors($_FILES[$input['name']]['error']);
+                        $this->fileErrors($value['error']);
 
                         $infos = [
-                            'name' => $_FILES[$input['name']]['name'],
-                            'type' => $_FILES[$input['name']]['type'],
-                            'location' => $_FILES[$input['name']]['tmp_name'],
-                            'size' => $_FILES[$input['name']]['size']
+                            'name' => $value['name'],
+                            'type' => $value['type'],
+                            'location' => $value['tmp_name'],
+                            'size' => $value['size']
                         ];
                     }
 
