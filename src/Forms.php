@@ -370,7 +370,7 @@ class Forms
                 }
             }
 
-            $params[] = $value; // TODO: Add the input name as the key for the v1
+            $params[$input['name']] = $value;
         }
 
         return $params;

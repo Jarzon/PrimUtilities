@@ -121,7 +121,7 @@ class FormsTest extends TestCase
 
         $params = $forms->verification();
 
-        $this->assertEquals('testy', $params[0]);
+        $this->assertEquals('testy', $params['test']);
     }
 
     public function testCheckboxUnchecked()
@@ -132,7 +132,7 @@ class FormsTest extends TestCase
 
         $params = $forms->verification();
 
-        $this->assertEquals(false, $params[0]);
+        $this->assertEquals(false, $params['test']);
     }
 
     public function testCheckboxCheckedBool()
@@ -143,7 +143,7 @@ class FormsTest extends TestCase
 
         $params = $forms->verification();
 
-        $this->assertEquals(true, $params[0]);
+        $this->assertEquals(true, $params['test']);
     }
 
     public function testCheckboxUncheckedBool()
@@ -154,7 +154,7 @@ class FormsTest extends TestCase
 
         $params = $forms->verification();
 
-        $this->assertEquals(false, $params[0]);
+        $this->assertEquals(false, $params['test']);
     }
 
     public function testRadioValue()
@@ -165,7 +165,7 @@ class FormsTest extends TestCase
 
         $values = $forms->verification();
 
-        $this->assertEquals('test', $values[0]);
+        $this->assertEquals('test', $values['test']);
     }
 
     public function testFileValue()
