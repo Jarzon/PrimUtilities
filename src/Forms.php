@@ -75,6 +75,7 @@ class Forms
     }
 
     public function updateValue(string $name, $value) {
+        // TODO: handle checkbox
         foreach ($this->forms as &$form) {
             if($form['name'] == $name) {
                 if($form['type'] == 'select' || $form['type'] == 'radio') {
@@ -368,6 +369,10 @@ class Forms
 
                     $value = $infos;
                 }
+            }
+
+            if($input['type'] != 'file' && $input['type'] != 'checkbox') {
+                $this->updateValue($input['name'], $value);
             }
 
             $params[$input['name']] = $value;
