@@ -87,11 +87,13 @@ class FormsTest extends TestCase
     {
         $_FILES = [];
 
-        $forms = new Forms(['test' => 'test.jpg']);
+        $forms = new Forms(['test' => '']);
 
         $forms->file('', 'test', '', '','', false, ['.jpg', '.jpeg']);
 
-        $forms->verification();
+        $values = $forms->verification();
+
+        $this->assertEquals('', $values['test']);
     }
 
     /**
@@ -100,12 +102,12 @@ class FormsTest extends TestCase
      */
     public function testFileEmptyRequired()
     {
-        $_FILES = [
+        $_FILES['test'] = [
             'name' => '',
             'type' => '',
             'tmp_name' => '',
             'size' => 4,
-            'error' => 0,
+            'error' => UPLOAD_ERR_NO_FILE,
         ];
 
         $forms = new Forms([]);
@@ -117,15 +119,15 @@ class FormsTest extends TestCase
 
     public function testFileEmpty()
     {
-        $_FILES = [
+        $_FILES['test'] = [
             'name' => '',
             'type' => '',
             'tmp_name' => '',
             'size' => 4,
-            'error' => 0,
+            'error' => UPLOAD_ERR_NO_FILE,
         ];
 
-        $forms = new Forms(['test' => '']);
+        $forms = new Forms([]);
 
         $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg']);
 
@@ -192,10 +194,10 @@ class FormsTest extends TestCase
     public function testFileValue()
     {
         $_FILES['test'] = [
-            'name' => UPLOAD_ERR_OK,
-            'type' => UPLOAD_ERR_OK,
+            'name' => 'test.txt',
+            'type' => 'text',
             'tmp_name' => vfsStream::url('root/temp/test.txt'),
-            'size' => UPLOAD_ERR_OK,
+            'size' => 4,
             'error' => UPLOAD_ERR_OK,
         ];
 
