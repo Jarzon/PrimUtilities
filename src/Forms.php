@@ -342,10 +342,11 @@ class Forms
                         foreach ($value['error'] AS $index => $error) {
                             $this->fileErrors($error);
 
-                            $location = $this->fileMove($value['tmp_name'][$index], $input['destination'], $input['ext']);
+                            list($location, $name) = $this->fileMove($value['tmp_name'][$index], $input['destination'], $input['ext']);
 
                             $infos[] = [
-                                'name' => $value['name'][$index],
+                                'name' => $name,
+                                'original_name' => $value['name'][$index],
                                 'type' => $value['type'][$index],
                                 'location' => $location,
                                 'size' => $value['size'][$index],
@@ -358,10 +359,11 @@ class Forms
 
                         $this->fileErrors($value['error']);
 
-                        $location = $this->fileMove($value['tmp_name'], $input['destination'], $input['ext']);
+                        list($location, $name) = $this->fileMove($value['tmp_name'], $input['destination'], $input['ext']);
 
                         $infos = [
-                            'name' => $value['name'],
+                            'name' => $name,
+                            'original_name' => $value['name'],
                             'type' => $value['type'],
                             'location' => $location,
                             'size' => $value['size']
@@ -399,9 +401,11 @@ class Forms
 
     private function fileMove(string $tmp_name, string $dest, string $ext = '')
     {
+        $name = sha1_file($tmp_name);
+
         $file = sprintf('%s/%s',
             $dest,
-            sha1_file($tmp_name)
+            $name
         );
 
         if($ext != '') {
@@ -415,7 +419,7 @@ class Forms
             throw new \Exception('failed to move uploaded file');
         }
 
-        return $file;
+        return [$file, $name];
     }
 
     public function move_uploaded_file($tmp_name, $dest) {
