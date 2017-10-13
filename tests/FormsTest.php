@@ -80,7 +80,7 @@ class FormsTest extends TestCase
     }
 
     /**
-     * @expectedException     \Exception
+     * @expectedException     \Error
      * @expectedExceptionMessage form seems to miss enctype attribute
      */
     public function testFileFormMissingEnctype()
@@ -208,6 +208,14 @@ class FormsTest extends TestCase
         $values = $forms->verification();
 
         $this->assertTrue(file_exists('vfs://root/data/da39a3ee5e6b4b0d3255bfef95601890afd80709'));
+
+        $this->assertEquals([
+            'name' => 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
+            'original_name' => 'test.txt',
+            'type' => 'text',
+            'location' => 'vfs://root/data/da39a3ee5e6b4b0d3255bfef95601890afd80709',
+            'size' => 4
+        ], $values['test']);
     }
 
     public function testGetFormsText()

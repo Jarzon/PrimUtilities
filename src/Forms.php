@@ -272,7 +272,7 @@ class Forms
             }
             else if($input['type'] === 'file') {
                 if(empty($_FILES[$input['name']]) && isset($this->post[$input['name']])) {
-                    throw new \Exception('form seems to miss enctype attribute');
+                    throw new \Error('form seems to miss enctype attribute');
                 }
 
                 if($_FILES[$input['name']]['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -290,10 +290,10 @@ class Forms
                 $value = (float)$value;
             }
 
-            if(isset($input['attributes']['required']) && $value === '') {
+            if(array_key_exists('required', $input['attributes']) && $value === '') {
                 throw new \Exception($input['name'] . ' is required');
             }
-            else if((!isset($input['attributes']['required']) && $value !== '')) {
+            else if((!array_key_exists('required', $input['attributes']) && !empty($value))) {
                 if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
                     $numberChars = mb_strlen($value);
                     if($numberChars > $input['max'] && $input['max'] != -1) {
@@ -343,12 +343,12 @@ class Forms
                         throw new \Exception($input['name'] . ' is not a valid url');
                     }
                 }
-                else if($input['type'] == 'file' && is_array($value)) {
+                else if($input['type'] == 'file') {
                     $infos = [];
 
                     // TODO: verify file type
 
-                    if(isset($input['attributes']['multiple'])) {
+                    if(array_key_exists('multiple', $input['attributes'])) {
                         foreach ($value['error'] AS $index => $error) {
                             $this->fileErrors($error);
 
@@ -386,7 +386,12 @@ class Forms
 
             $updated = false;
 
-            if($input['type'] == 'select' || $input['type'] == 'radio') {
+            if($input['type'] === 'file') {
+                if($value !== '') {
+                    $updated = true;
+                }
+            }
+            else if($input['type'] == 'select' || $input['type'] == 'radio') {
                 if($value != $input['selected']) {
                     $updated = true;
                 }
@@ -396,10 +401,8 @@ class Forms
                     $updated = true;
                 }
             }
-            else if($input['type'] != 'file') {
-                if($value !== $input['value']) {
-                    $updated = true;
-                }
+            else if($value !== $input['value']) {
+                $updated = true;
             }
 
             if($updated) {
