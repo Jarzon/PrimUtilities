@@ -88,7 +88,7 @@ class Forms
         }
         if($form['type'] == 'select' || $form['type'] == 'radio') {
             $form['selected'] = $value;
-        } else {
+        } else if ($form['type'] != 'file') {
             $form['value'] = $value;
             $form['attributes']['value'] = $value;
         }
