@@ -79,11 +79,11 @@ class Forms
         $form =& $this->forms[$key];
 
         if($form['type'] == 'checkbox') {
-            if(isset($input['attributes']['checked']) && $value === '') {
+            if($form['selected'] && $value === '') {
                 unset($form['attributes']['checked']);
             }
-            elseif (!isset($input['attributes']['checked']) && $value !== '') {
-                $form['attributes']['checked'] = 'checked';
+            elseif (!$form['selected'] && $value !== '') {
+                $form['attributes']['checked'] = null;
             }
         }
         if($form['type'] == 'select' || $form['type'] == 'radio') {
@@ -101,7 +101,11 @@ class Forms
         $attr = '';
 
         foreach($attributes as $attribute => $value) {
-            $attr .= " $attribute=\"$value\"";
+            if($value === null) {
+                $attr .= " $attribute";
+            } else {
+                $attr .= " $attribute=\"$value\"";
+            }
         }
 
         $html = "<$tag$attr>";
@@ -122,7 +126,7 @@ class Forms
                 $attr = ['type' => $input['type'], 'name' => $input['name'], 'value' => $attrValue];
 
                 if($input['selected'] == $attrValue) {
-                    $attr['checked'] = 'checked';
+                    $attr['checked'] = null;
                 }
 
                 $html[] = ['label' => $index, 'input' => $this->generateTag('input', $attr)];
@@ -135,7 +139,7 @@ class Forms
                 $attr = ['value' => $attrValue];
 
                 if($input['selected'] == $attrValue) {
-                    $attr['selected'] = 'selected';
+                    $attr['selected'] = null;
                 }
 
                 $content .= $this->generateTag('option', $attr, $index);
@@ -230,16 +234,16 @@ class Forms
     public function checkbox($label, string $name, string $class = '', $value = '', bool $selected = false, array $attributes = [])
     {
         if($selected) {
-            $attributes['checked'] = 'checked';
+            $attributes['checked'] = null;
         }
 
-        $this->forms[] = $this->row('checkbox', $label, $name, $class, $value, false, false, $attributes, false);
+        $this->forms[] = $this->row('checkbox', $label, $name, $class, $value, false, false, $attributes, false, $selected);
     }
 
     public function file(string $label, string $name, string $destination = '', string $ext = '', string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
     {
         if($multiple) {
-            $attributes['multiple'] = 'multiple';
+            $attributes['multiple'] = null;
         }
         if(!empty($accept)) {
             $attributes['accept'] = implode(', ', $accept);
@@ -388,7 +392,7 @@ class Forms
                 }
             }
             else if($input['type'] === 'checkbox') {
-                if((isset($input['attributes']['checked']) && $value === '') || (!isset($input['attributes']['checked']) && $value !== '')) {
+                if(($input['selected'] && $value === '') || (!$input['selected'] && $value !== '')) {
                     $updated = true;
                 }
             }

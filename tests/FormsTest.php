@@ -262,7 +262,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="test"><option value="test" selected="selected">test</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="test"><option value="test" selected>test</option></select>', $content[0]['html']);
     }
 
     public function testGetFormsRadio()
@@ -273,7 +273,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input type="radio" name="test" value="test" checked="checked">', $content[0]['html'][0]['input']);
+        $this->assertEquals('<input type="radio" name="test" value="test" checked>', $content[0]['html'][0]['input']);
     }
 
     public function testGetFormsCheckbox()
@@ -284,7 +284,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input checked="checked" type="checkbox" value="test" name="test">', $content[0]['html']);
+        $this->assertEquals('<input checked type="checkbox" value="test" name="test">', $content[0]['html']);
     }
 
     public function testUpdateValue()
@@ -318,7 +318,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected="selected">oranges</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected>oranges</option></select>', $content[0]['html']);
 
     }
 
@@ -336,7 +336,7 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input type="checkbox" value="apples" name="fruits" checked="checked">', $content[0]['html']);
+        $this->assertEquals('<input type="checkbox" value="apples" name="fruits" checked>', $content[0]['html']);
 
     }
 
@@ -348,6 +348,6 @@ class FormsTest extends TestCase
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input multiple="multiple" accept=".jpg, .jpeg" type="file" name="test">', $content[0]['html']);
+        $this->assertEquals('<input multiple accept=".jpg, .jpeg" type="file" name="test">', $content[0]['html']);
     }
 }
