@@ -65,7 +65,7 @@ class Forms
         return $row;
     }
 
-    public function updateValues(array $values = []) {
+    public function updateValues($values = []) {
         if(empty($values)) {
             $values = $this->post;
         } else {
