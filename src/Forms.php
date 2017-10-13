@@ -9,6 +9,7 @@ class Forms
     public $forms = [];
     protected $dateFormat = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
     protected $post = [];
+    protected $update = false;
 
     public function __construct(array $post)
     {
@@ -67,6 +68,8 @@ class Forms
     public function updateValues(array $values = []) {
         if(empty($values)) {
             $values = $this->post;
+        } else {
+            $this->update = true;
         }
 
         foreach ($values as $name => $value) {
@@ -76,21 +79,24 @@ class Forms
 
     public function updateValue(string $name, $value) {
         $key = array_search($name, array_column($this->forms, 'name'));
-        $form =& $this->forms[$key];
 
-        if($form['type'] == 'checkbox') {
-            if($form['selected'] && $value === '') {
-                unset($form['attributes']['checked']);
+        if($key !== false) {
+            $form =& $this->forms[$key];
+
+            if($form['type'] == 'checkbox') {
+                if($form['selected'] && $value === '') {
+                    unset($form['attributes']['checked']);
+                }
+                elseif (!$form['selected'] && $value !== '') {
+                    $form['attributes']['checked'] = null;
+                }
             }
-            elseif (!$form['selected'] && $value !== '') {
-                $form['attributes']['checked'] = null;
+            if($form['type'] == 'select' || $form['type'] == 'radio') {
+                $form['selected'] = $value;
+            } else if ($form['type'] != 'file') {
+                $form['value'] = $value;
+                $form['attributes']['value'] = $value;
             }
-        }
-        if($form['type'] == 'select' || $form['type'] == 'radio') {
-            $form['selected'] = $value;
-        } else if ($form['type'] != 'file') {
-            $form['value'] = $value;
-            $form['attributes']['value'] = $value;
         }
 
         return;
@@ -409,7 +415,7 @@ class Forms
                 $this->updateValue($input['name'], $value);
             }
 
-            if(array_key_exists('required', $input['attributes']) || $updated) {
+            if((array_key_exists('required', $input['attributes']) && !$this->update) || $updated) {
                 $values[$input['name']] = $value;
             }
         }
