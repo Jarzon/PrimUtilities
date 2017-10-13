@@ -67,8 +67,8 @@ class FormsTest extends TestCase
     }
 
     /**
-     * @expectedException     \Exception
-     * @expectedExceptionMessage error
+     * @expectedException     \Error
+     * @expectedExceptionMessage 123456789ab doesn't exist
      */
     public function testRadioValueException()
     {
@@ -133,7 +133,7 @@ class FormsTest extends TestCase
 
         $values = $forms->verification();
 
-        $this->assertEquals('', $values['test']);
+        $this->assertEquals([], $values);
     }
 
     public function testCheckboxChecked()
@@ -182,13 +182,13 @@ class FormsTest extends TestCase
 
     public function testRadioValue()
     {
-        $forms = new Forms(['test' => 'test']);
+        $forms = new Forms(['test' => 'testy']);
 
-        $forms->radio('test', 'test', ['test' => 'test'], 'test');
+        $forms->radio('test', 'test', ['test' => 'test', 'testy' => 'testy'], 'test');
 
         $values = $forms->verification();
 
-        $this->assertEquals('test', $values['test']);
+        $this->assertEquals('testy', $values['test']);
     }
 
     public function testFileValue()
@@ -319,6 +319,24 @@ class FormsTest extends TestCase
         $content = $forms->getForms();
 
         $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected="selected">oranges</option></select>', $content[0]['html']);
+
+    }
+
+    public function testUpdateValuesCheckbox()
+    {
+        $forms = new Forms(['fruits' => 'apples']);
+
+        $forms->checkbox('', 'fruits', '', 'apples');
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input type="checkbox" value="apples" name="fruits">', $content[0]['html']);
+
+        $forms->verification();
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input type="checkbox" value="apples" name="fruits" checked="checked">', $content[0]['html']);
 
     }
 

@@ -75,19 +75,25 @@ class Forms
     }
 
     public function updateValue(string $name, $value) {
-        // TODO: handle checkbox
-        foreach ($this->forms as &$form) {
-            if($form['name'] == $name) {
-                if($form['type'] == 'select' || $form['type'] == 'radio') {
-                    $form['selected'] = $value;
-                } else {
-                    $form['value'] = $value;
-                    $form['attributes']['value'] = $value;
-                }
+        $key = array_search($name, array_column($this->forms, 'name'));
+        $form =& $this->forms[$key];
 
-                return;
+        if($form['type'] == 'checkbox') {
+            if(isset($input['attributes']['checked']) && $value === '') {
+                unset($form['attributes']['checked']);
+            }
+            elseif (!isset($input['attributes']['checked']) && $value !== '') {
+                $form['attributes']['checked'] = 'checked';
             }
         }
+        if($form['type'] == 'select' || $form['type'] == 'radio') {
+            $form['selected'] = $value;
+        } else {
+            $form['value'] = $value;
+            $form['attributes']['value'] = $value;
+        }
+
+        return;
     }
 
     public function generateTag(string $tag, array $attributes, $content = false) : string
@@ -248,7 +254,7 @@ class Forms
 
     public function verification() : array
     {
-        $params = [];
+        $values = [];
 
         foreach($this->forms as $input) {
             $value = '';
@@ -320,7 +326,7 @@ class Forms
                     }
 
                     if(!$exist) {
-                        throw new \Exception('error');
+                        throw new \Error("$value doesn't exist");
                     }
                 }
                 else if($input['type'] == 'email') {
@@ -354,7 +360,7 @@ class Forms
                         }
                     } else {
                         if(is_array($value['error'])) {
-                            throw new \Exception('bypassed multiple limitation');
+                            throw new \Error('bypassed multiple limitation');
                         }
 
                         $this->fileErrors($value['error']);
@@ -374,14 +380,34 @@ class Forms
                 }
             }
 
-            if($input['type'] != 'file' && $input['type'] != 'checkbox') {
+            $updated = false;
+
+            if($input['type'] == 'select' || $input['type'] == 'radio') {
+                if($value != $input['selected']) {
+                    $updated = true;
+                }
+            }
+            else if($input['type'] === 'checkbox') {
+                if((isset($input['attributes']['checked']) && $value === '') || (!isset($input['attributes']['checked']) && $value !== '')) {
+                    $updated = true;
+                }
+            }
+            else if($input['type'] != 'file') {
+                if($value != $input['value']) {
+                    $updated = true;
+                }
+            }
+
+            if($updated) {
                 $this->updateValue($input['name'], $value);
             }
 
-            $params[$input['name']] = $value;
+            if(isset($input['attributes']['required']) || $updated) {
+                $values[$input['name']] = $value;
+            }
         }
 
-        return $params;
+        return $values;
     }
 
     private function fileErrors($error)
