@@ -397,7 +397,7 @@ class Forms
                 }
             }
             else if($input['type'] != 'file') {
-                if($value != $input['value']) {
+                if($value !== $input['value']) {
                     $updated = true;
                 }
             }
