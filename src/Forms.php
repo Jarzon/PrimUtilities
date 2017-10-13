@@ -406,7 +406,7 @@ class Forms
                 $this->updateValue($input['name'], $value);
             }
 
-            if(isset($input['attributes']['required']) || $updated) {
+            if(array_key_exists('required', $input['attributes']) || $updated) {
                 $values[$input['name']] = $value;
             }
         }
