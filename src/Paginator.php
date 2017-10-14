@@ -83,8 +83,8 @@ class Paginator
         for($current = ($this->currentPage - 3), $stop = ($this->currentPage + $this->showPagesNumber); $current < $stop; ++$current)
         {
             if($current < 1 || $current > $this->numberOfPages) continue;
-            else if($current != $this->currentPage) $output .= '<a href="'.$current.'" class="pageNumberLink">'.$current.'</a> ';
-            else $output .= '<span class="pageNumber">'.$current.'</span> ';
+            else if($current != $this->currentPage) $output .= '<a href="'.$current.'" class="pageNumberLink">'.$current.'</a>';
+            else $output .= '<span class="pageNumber">'.$current.'</span>';
         }
 
         return $output;
