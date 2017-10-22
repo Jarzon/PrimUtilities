@@ -20,8 +20,6 @@ class Forms
 
     protected function row(string $type, string $name)
     {
-        $this->lastRow = $name;
-
         $row = ['type' => $type, 'name' => $name, 'attributes' => ['name' => $name], 'label' => $name];
 
         if(!in_array($type, ['textarea', 'select', 'radio'])) {
@@ -366,6 +364,13 @@ class Forms
     public function attributes($attributes = [])
     {
         $this->lastRow['attributes'] += $attributes;
+
+        return $this;
+    }
+
+    public function RemoveAttribute($attribute)
+    {
+        unset($this->lastRow['attributes'][$attribute]);
 
         return $this;
     }

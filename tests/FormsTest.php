@@ -261,9 +261,13 @@ class FormsTest extends TestCase
             ->class('testClass secondClass')
             ->attributes(['custom-attr' => 'customValue']);
 
+        $forms
+            ->text('test2');
+
         $content = $forms->getForms();
 
         $this->assertEquals('<input name="test" type="text" minlength="4" maxlength="10" class="testClass secondClass" custom-attr="customValue">', $content['test']['html']);
+        $this->assertEquals('<input name="test2" type="text">', $content['test2']['html']);
 
         $this->assertEquals('test', $content['test']['label']);
     }
