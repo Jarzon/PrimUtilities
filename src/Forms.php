@@ -365,9 +365,7 @@ class Forms
 
     public function attributes($attributes = [])
     {
-        foreach ($attributes as $key => $attr) {
-            $this->lastRow['attributes'][$key] = $attr;
-        }
+        $this->lastRow['attributes'] += $attributes;
 
         return $this;
     }
