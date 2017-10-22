@@ -363,6 +363,15 @@ class Forms
         return $this;
     }
 
+    public function attributes($attributes = [])
+    {
+        foreach ($attributes as $key => $attr) {
+            $this->lastRow['attributes'][$key] = $attr;
+        }
+
+        return $this;
+    }
+
     public function verification() : array
     {
         $values = [];

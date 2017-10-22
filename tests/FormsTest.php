@@ -258,11 +258,12 @@ class FormsTest extends TestCase
             ->text('test')
             ->min(4)
             ->max(10)
-            ->class('testClass secondClass');
+            ->class('testClass secondClass')
+            ->attributes(['custom-attr' => 'customValue']);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input name="test" type="text" minlength="4" maxlength="10" class="testClass secondClass">', $content['test']['html']);
+        $this->assertEquals('<input name="test" type="text" minlength="4" maxlength="10" class="testClass secondClass" custom-attr="customValue">', $content['test']['html']);
 
         $this->assertEquals('test', $content['test']['label']);
     }
