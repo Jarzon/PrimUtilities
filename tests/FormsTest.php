@@ -35,7 +35,12 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->text('', 'test', '', '', 10, 4);
+        //$forms->text('test', '', '', 10, 4);
+
+        $forms
+            ->text('test')
+            ->min(4)
+            ->max(10);
 
         $forms->verification();
     }
@@ -48,7 +53,11 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => '']);
 
-        $forms->text('', 'test', '', '', 10, 4, ['required' => 'required']);
+        $forms
+            ->text('test')
+            ->min(4)
+            ->max(10)
+            ->required();
 
         $forms->verification();
     }
@@ -61,7 +70,10 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => '123456789ab']);
 
-        $forms->text('', 'test', '', '', 10, 4);
+        $forms
+            ->text('test')
+            ->min(4)
+            ->max(10);
 
         $forms->verification();
     }
@@ -74,7 +86,9 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => '123456789ab']);
 
-        $forms->radio('test', 'test', ['test' => 'test'], 'test');
+        $forms
+            ->radio('test')
+            ->value(['test' => 'test']);
 
         $forms->verification();
     }
@@ -89,7 +103,9 @@ class FormsTest extends TestCase
 
         $forms = new Forms(['test' => '']);
 
-        $forms->file('', 'test', '', '','', false, ['.jpg', '.jpeg']);
+        $forms
+            ->file('test', '/')
+            ->types(['.jpg', '.jpeg']);
 
         $values = $forms->verification();
 
@@ -112,7 +128,10 @@ class FormsTest extends TestCase
 
         $forms = new Forms([]);
 
-        $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg'], ['required' => 'required']);
+        $forms
+            ->file('test', '/')
+            ->types(['.jpg', '.jpeg'])
+            ->required();
 
         $forms->verification();
     }
@@ -129,7 +148,9 @@ class FormsTest extends TestCase
 
         $forms = new Forms([]);
 
-        $forms->file('', 'test', '', '', '', false, ['.jpg', '.jpeg']);
+        $forms
+            ->file('test', '/')
+            ->types(['.jpg', '.jpeg']);
 
         $values = $forms->verification();
 
@@ -140,7 +161,9 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => '1234']);
 
-        $forms->checkbox('', 'test', 'test', 'testy');
+        $forms
+            ->checkbox('test')
+            ->value('testy');
 
         $params = $forms->verification();
 
@@ -151,7 +174,9 @@ class FormsTest extends TestCase
     {
         $forms = new Forms([]);
 
-        $forms->checkbox('', 'test', 'test', 'testy');
+        $forms
+            ->checkbox('test')
+            ->value('testy');
 
         $params = $forms->verification();
 
@@ -162,7 +187,9 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => '1234']);
 
-        $forms->checkbox('', 'test', 'test', true, false, []);
+        $forms
+            ->checkbox('test')
+            ->value(true);
 
         $params = $forms->verification();
 
@@ -173,7 +200,9 @@ class FormsTest extends TestCase
     {
         $forms = new Forms([]);
 
-        $forms->checkbox('', 'test', 'test', true, false, []);
+        $forms
+            ->checkbox('test')
+            ->value(true);
 
         $params = $forms->verification();
 
@@ -184,7 +213,10 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => 'testy']);
 
-        $forms->radio('test', 'test', ['test' => 'test', 'testy' => 'testy'], 'test');
+        $forms
+            ->radio('test')
+            ->value(['test' => 'test', 'testy' => 'testy'])
+            ->selected('test');
 
         $values = $forms->verification();
 
@@ -203,7 +235,9 @@ class FormsTest extends TestCase
 
         $forms = new Forms(['test' => 'test.txt']);
 
-        $forms->file('', 'test', vfsStream::url('root/data'), '', '', false, ['.txt', '.text']);
+        $forms
+            ->file('test', vfsStream::url('root/data'))
+            ->types(['.txt', '.text']);
 
         $values = $forms->verification();
 
@@ -222,111 +256,138 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->text('', 'test', '', '', 10, 4);
+        $forms
+            ->text('test')
+            ->min(4)
+            ->max(10);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input minlength="4" maxlength="10" type="text" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="text" minlength="4" maxlength="10">', $content['test']['html']);
     }
 
     public function testGetFormsTextarea()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->textarea('', 'test', '', '', 500, 0);
+        $forms
+            ->textarea('test')
+            ->min(0)
+            ->max(500);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<textarea minlength="0" maxlength="500" name="test"></textarea>', $content[0]['html']);
+        $this->assertEquals('<textarea name="test" minlength="0" maxlength="500"></textarea>', $content['test']['html']);
     }
 
     public function testGetFormsNumber()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->number('', 'test', '', '', 10, 4);
+        $forms
+            ->number('test')
+            ->min(4)
+            ->max(10);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input min="4" max="10" step="1" type="number" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="number" step="1" min="4" max="10">', $content['test']['html']);
     }
 
     public function testGetFormsFloat()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->float('', 'test', '', '', 10, 4);
+        $forms
+            ->float('test')
+            ->min(4)
+            ->max(10);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input min="4" max="10" step="0.01" type="number" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="number" step="0.01" min="4" max="10">', $content['test']['html']);
     }
 
     public function testGetFormsSelect()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->select('', 'test', '', ['test' => 'test'], 'test');
+        $forms
+            ->select('test')
+            ->value(['test' => 'test'])
+            ->selected('test');
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="test"><option value="test" selected>test</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="test"><option value="test" selected>test</option></select>', $content['test']['html']);
     }
 
     public function testGetFormsRadio()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->radio('test', 'test', ['test' => 'test'], 'test');
+        $forms
+            ->radio('test')
+            ->value(['test' => 'test'])
+            ->selected('test');
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input type="radio" name="test" value="test" checked>', $content[0]['html'][0]['input']);
+        $this->assertEquals('<input type="radio" name="test" value="test" checked>', $content['test']['html'][0]['input']);
     }
 
     public function testGetFormsCheckbox()
     {
         $forms = new Forms(['test' => 'a']);
 
-        $forms->checkbox('', 'test', '', 'test', true);
+        $forms
+            ->checkbox('test')
+            ->value('test')
+            ->selected();
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input checked type="checkbox" value="test" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="checkbox" value="test" checked>', $content['test']['html']);
     }
 
     public function testUpdateValue()
     {
         $forms = new Forms(['test' => 'good']);
 
-        $forms->text('', 'test', '', 'wrong', 10, 4);
+        $forms
+            ->text('test')
+            ->value('wrong')
+            ->min(4)
+            ->max(10);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input minlength="4" maxlength="10" type="text" value="wrong" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="text" value="wrong" minlength="4" maxlength="10">', $content['test']['html']);
 
         $forms->verification();
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input minlength="4" maxlength="10" type="text" value="good" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="text" value="good" minlength="4" maxlength="10">', $content['test']['html']);
     }
 
     public function testUpdateValuesSelect()
     {
         $forms = new Forms(['fruits' => 'oranges']);
 
-        $forms->select('', 'fruits', '', ['apples' => 'apples', 'oranges' => 'oranges']);
+        $forms
+            ->select('fruits')
+            ->value(['apples' => 'apples', 'oranges' => 'oranges']);
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges">oranges</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges">oranges</option></select>', $content['fruits']['html']);
 
         $forms->verification();
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected>oranges</option></select>', $content[0]['html']);
+        $this->assertEquals('<select name="fruits"><option value="apples">apples</option><option value="oranges" selected>oranges</option></select>', $content['fruits']['html']);
 
     }
 
@@ -334,28 +395,32 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['fruits' => 'apples']);
 
-        $forms->checkbox('', 'fruits', '', 'apples');
+        $forms
+            ->checkbox('fruits')
+            ->value('apples');
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input type="checkbox" value="apples" name="fruits">', $content[0]['html']);
+        $this->assertEquals('<input name="fruits" type="checkbox" value="apples">', $content['fruits']['html']);
 
         $forms->verification();
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input type="checkbox" value="apples" name="fruits" checked>', $content[0]['html']);
-
+        $this->assertEquals('<input name="fruits" type="checkbox" value="apples" checked>', $content['fruits']['html']);
     }
 
     public function testGetFormsFile()
     {
         $forms = new Forms([]);
 
-        $forms->file('', 'test', '', '', '', true, ['.jpg', '.jpeg']);
+        $forms
+            ->file('test', '/')
+            ->types(['.jpg', '.jpeg'])
+            ->multiple();
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input multiple accept=".jpg, .jpeg" type="file" name="test">', $content[0]['html']);
+        $this->assertEquals('<input name="test" type="file" accept=".jpg, .jpeg" multiple>', $content['test']['html']);
     }
 }

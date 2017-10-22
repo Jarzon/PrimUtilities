@@ -11,56 +11,22 @@ class Forms
     protected $post = [];
     protected $update = false;
 
+    protected $lastRow = '';
+
     public function __construct(array $post)
     {
         $this->post = $post;
     }
 
-    protected function row(string $type, $label, string $name, string $class, $value, $max, $min, array $attributes = [], $step = false, $selected = false) : array
+    protected function row(string $type, string $name) : array
     {
-        $row = ['type' => $type, 'name' => $name, 'class' => $class, 'value' => $value, 'selected' => $selected];
+        $this->lastRow = $name;
 
-        if($min !== false && $max !== false) {
-            if($type == 'text' || $type == 'password' || $type == 'email' || $type == 'textarea') {
-                $attributes['minlength'] = $min;
-                $attributes['maxlength'] = $max;
-            }
-            else if($type == 'number' || $type == 'float') {
-                $attributes['min'] = $min;
-                $attributes['max'] = $max;
-            }
+        $row = ['type' => $type, 'name' => $name, 'attributes' => ['name' => $name]];
 
-            $row['min'] = $min;
-            $row['max'] = $max;
+        if(!in_array($type, ['textarea', 'select', 'radio'])) {
+            $row['attributes']['type'] = $type;
         }
-
-        if($class != '') {
-            $attributes['class'] = $class;
-        }
-
-        if($step !== false) {
-            $attributes['step'] = $step;
-        }
-
-        if($label === '') {
-            $row['label'] = $name;
-        } else if($label !== false) {
-            $row['label'] = $label;
-        }
-
-        if($type != 'select' && $type != 'radio' && $type != 'textarea') {
-            if($type == 'float') {
-                $type = 'number';
-            }
-
-            $attributes['type'] = $type;
-
-            if($value !== '' && $type != 'file') $attributes['value'] = $value;
-        }
-
-        $attributes['name'] = $name;
-
-        $row['attributes'] = $attributes;
 
         return $row;
     }
@@ -78,25 +44,21 @@ class Forms
     }
 
     public function updateValue(string $name, $value) {
-        $key = array_search($name, array_column($this->forms, 'name'));
+        $form =& $this->forms[$name];
 
-        if($key !== false) {
-            $form =& $this->forms[$key];
-
-            if($form['type'] == 'checkbox') {
-                if($form['selected'] && $value === '') {
-                    unset($form['attributes']['checked']);
-                }
-                elseif (!$form['selected'] && $value !== '') {
-                    $form['attributes']['checked'] = null;
-                }
+        if($form['type'] == 'checkbox') {
+            if($form['selected'] && $value === '') {
+                unset($form['attributes']['checked']);
             }
-            if($form['type'] == 'select' || $form['type'] == 'radio') {
-                $form['selected'] = $value;
-            } else if ($form['type'] != 'file') {
-                $form['value'] = $value;
-                $form['attributes']['value'] = $value;
+            elseif (!$form['selected'] && $value !== '') {
+                $form['attributes']['checked'] = null;
             }
+        }
+        if($form['type'] == 'select' || $form['type'] == 'radio') {
+            $form['selected'] = $value;
+        } else if ($form['type'] != 'file') {
+            $form['value'] = $value;
+            $form['attributes']['value'] = $value;
         }
 
         return;
@@ -131,7 +93,7 @@ class Forms
             foreach($input['value'] as $index => $attrValue) {
                 $attr = ['type' => $input['type'], 'name' => $input['name'], 'value' => $attrValue];
 
-                if($input['selected'] == $attrValue) {
+                if($input['selected'] === $attrValue) {
                     $attr['checked'] = null;
                 }
 
@@ -144,7 +106,7 @@ class Forms
             foreach($input['value'] as $index => $attrValue) {
                 $attr = ['value' => $attrValue];
 
-                if($input['selected'] == $attrValue) {
+                if($input['selected'] === $attrValue) {
                     $attr['selected'] = null;
                 }
 
@@ -170,97 +132,218 @@ class Forms
         }
     }
 
-    public function hidden(string $name, string $value = '', $max = false, array $attributes = [])
+    public function hidden(string $name)
     {
-        $this->forms[] = $this->row('hidden', false, $name, '', $value, $max, 0, $attributes);
+        $this->forms[$name] = $this->row('hidden', $name);
+
+        return $this;
     }
 
-    public function text($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
+    public function text(string $name)
     {
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, $max, $min, $attributes);
+        $this->forms[$name] = $this->row('text', $name);
+
+        return $this;
     }
 
-    public function textarea($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
+    public function textarea(string $name)
     {
-        $this->forms[] = $this->row('textarea', $label, $name, $class, $value, $max, $min, $attributes);
+        $this->forms[$name] = $this->row('textarea', $name);
+        $this->forms[$name]['value'] = '';
+
+        return $this;
     }
 
-    public function password($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
+    public function password(string $name)
     {
-        $this->forms[] = $this->row('password', $label, $name, $class, $value, $max, $min, $attributes);
+        $this->forms[$name] = $this->row('password', $name);
+
+        return $this;
     }
 
-    public function email($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
+    public function email(string $name)
     {
-        $this->forms[] = $this->row('email', $label, $name, $class, $value, $max, $min, $attributes);
+        $this->forms[$name] = $this->row('password', $name);
+
+        return $this;
     }
 
-    public function url($label, string $name, string $class = '', string $value = '', $max = false, int $min = 0, array $attributes = [])
+    public function url(string $name)
     {
-        $this->forms[] = $this->row('url', $label, $name, $class, $value, $max, $min, $attributes);
+        $this->forms[$name] = $this->row('url', $name);
+
+        return $this;
     }
 
-    public function number($label, string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 1, array $attributes = [])
+    public function number(string $name)
     {
-        $this->forms[] = $this->row('number', $label, $name, $class, $value, $max, $min, $attributes, $step);
+        $this->forms[$name] = $this->row('number', $name);
+
+        $this->forms[$name]['attributes']['step'] = 1;
+
+        return $this;
     }
 
-    public function float($label, string $name, string $class = '', string $value = '', $max = false, $min = false, float $step = 0.01, array $attributes = [])
+    public function float(string $name)
     {
-        $this->forms[] = $this->row('float', $label, $name, $class, $value, $max, $min, $attributes, $step);
+        $this->forms[$name] = $this->row('float', $name);
+
+        $this->forms[$name]['attributes']['step'] = 0.01;
+        $this->forms[$name]['attributes']['type'] = 'number';
+
+        return $this;
     }
 
-    public function date($label, string $name, string $class = '', string $value = '', $pattern = false, array $attributes = [])
+    public function date(string $name)
     {
-        if($pattern === false) $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
-        if($pattern !== '') $attributes['pattern'] = $pattern;
+        $this->forms[$name] = $this->row('date', $name);
 
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $attributes);
+        $this->forms[$name]['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
+
+        return $this;
     }
 
-    public function datetime($label, string $name, string $class = '', string $value = '', $pattern = false, array $attributes = [])
+    public function datetime(string $name)
     {
-        if($pattern === false) $pattern = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}';
-        if($pattern !== '') $attributes['pattern'] = $pattern;
-        $attributes['pattern'] = $pattern;
+        $this->forms[$name] = $this->row('datetime', $name);
 
-        $this->forms[] = $this->row('text', $label, $name, $class, $value, false, false, $attributes);
+        $this->forms[$name]['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}';
+
+        return $this;
     }
 
-    public function select($label, string $name, string $class = '', array $value = [], string $selected = '', array $attributes = [])
+    public function select(string $name)
     {
-        $this->forms[] = $this->row('select', $label, $name, $class, $value, false, false, $attributes, false, $selected);
+        $this->forms[$name] = $this->row('select', $name);
+        $this->forms[$name]['selected'] = '';
+
+        return $this;
     }
 
-    public function radio(string $name, string $class = '', array $value = [], string $selected = '', array $attributes = [])
+    public function radio(string $name)
     {
-        $this->forms[] = $this->row('radio', false, $name, $class, $value, false, false, $attributes, false, $selected);
+        $this->forms[$name] = $this->row('radio', $name);
+
+        return $this;
     }
 
-    public function checkbox($label, string $name, string $class = '', $value = '', bool $selected = false, array $attributes = [])
+    public function checkbox(string $name)
     {
-        if($selected) {
-            $attributes['checked'] = null;
+        $this->forms[$name] = $this->row('checkbox', $name);
+
+        $this->forms[$name]['selected'] = false;
+
+        return $this;
+    }
+
+    public function file(string $name, string $destination, string $ext = '')
+    {
+        $this->forms[$name] = $this->row('file', $name);
+
+        $this->forms[$name]['destination'] = $destination;
+        $this->forms[$name]['ext'] = $ext;
+
+        return $this;
+    }
+
+    public function min(int $min = 0)
+    {
+        $row = $this->forms[$this->lastRow];
+        $attr = 'minlength';
+        if($row['type'] == 'number' || $row['type'] == 'float') {
+            $attr = 'min';
         }
 
-        $this->forms[] = $this->row('checkbox', $label, $name, $class, $value, false, false, $attributes, false, $selected);
+        $this->forms[$this->lastRow]['attributes'][$attr] = $min;
+
+        $this->forms[$this->lastRow]['min'] = $min;
+
+        return $this;
     }
 
-    public function file(string $label, string $name, string $destination = '', string $ext = '', string $class = '', bool $multiple = false, array $accept = [], array $attributes = [])
+    public function max(int $max = 0)
+    {
+        $row = $this->forms[$this->lastRow];
+        $attr = 'maxlength';
+        if($row['type'] == 'number' || $row['type'] == 'float') {
+            $attr = 'max';
+        }
+
+        $this->forms[$this->lastRow]['attributes'][$attr] = $max;
+
+        $this->forms[$this->lastRow]['max'] = $max;
+
+        return $this;
+    }
+
+    public function required(bool $required = true)
+    {
+        if($required) {
+            $this->forms[$this->lastRow]['attributes']['required'] = null;
+        } else {
+            unset($this->forms[$this->lastRow]['attributes']['required']);
+        }
+
+        return $this;
+    }
+
+    public function value($value = '')
+    {
+        // TODO: force variable type base on input type
+        // TODO: don't add value attribut if its a radio or a select
+        $this->forms[$this->lastRow]['value'] = $value;
+
+        if(!is_array($value)) {
+            $this->forms[$this->lastRow]['attributes']['value'] = $value;
+        }
+
+        return $this;
+    }
+
+    public function types($types = [])
+    {
+        // TODO: implements
+
+        $this->forms[$this->lastRow]['attributes']['accept'] = implode(', ', $types);
+
+        return $this;
+    }
+
+    public function selected($selected = true)
+    {
+        if($this->forms[$this->lastRow]['type'] === 'checkbox') {
+            $this->forms[$this->lastRow]['attributes']['checked'] = null;
+        }
+
+        $this->forms[$this->lastRow]['selected'] = $selected;
+
+        return $this;
+    }
+
+    public function multiple($multiple = true)
     {
         if($multiple) {
-            $attributes['multiple'] = null;
-        }
-        if(!empty($accept)) {
-            $attributes['accept'] = implode(', ', $accept);
+            $this->forms[$this->lastRow]['attributes']['multiple'] = null;
+        } else {
+            unset($this->forms[$this->lastRow]['attributes']['multiple']);
         }
 
-        $row = $this->row('file', $label, $name, $class, $accept, false, false, $attributes, false, '');
-        $row['destination'] = $destination;
-        $row['ext'] = $ext;
-
-        $this->forms[] = $row;
+        return $this;
     }
+
+    public function pattern($pattern = false)
+    {
+        if($pattern) {
+            $this->forms[$this->lastRow]['attributes']['pattern'] = $pattern;
+        } else {
+            unset($this->forms[$this->lastRow]['attributes']['pattern']);
+        }
+
+
+        return $this;
+    }
+
+
 
     public function verification() : array
     {
@@ -434,7 +517,7 @@ class Forms
             case UPLOAD_ERR_FORM_SIZE:
                 throw new \Exception('exceeded filesize limit');
             default:
-                throw new \Exception('unknown errors');
+                throw new \Error('unknown upload error');
         }
     }
 
@@ -455,7 +538,7 @@ class Forms
             $tmp_name,
             $file
         )) {
-            throw new \Exception('failed to move uploaded file');
+            throw new \Error('failed to move uploaded file');
         }
 
         return [$file, $name];
