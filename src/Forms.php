@@ -22,7 +22,7 @@ class Forms
     {
         $this->lastRow = $name;
 
-        $row = ['type' => $type, 'name' => $name, 'attributes' => ['name' => $name]];
+        $row = ['type' => $type, 'name' => $name, 'attributes' => ['name' => $name], 'label' => $name];
 
         if(!in_array($type, ['textarea', 'select', 'radio'])) {
             $row['attributes']['type'] = $type;
@@ -309,6 +309,13 @@ class Forms
         return $this;
     }
 
+    public function class(string $classes = '')
+    {
+        $this->forms[$this->lastRow]['attributes']['class'] = $classes;
+
+        return $this;
+    }
+
     public function selected($selected = true)
     {
         if($this->forms[$this->lastRow]['type'] === 'checkbox') {
@@ -343,7 +350,16 @@ class Forms
         return $this;
     }
 
+    public function label($label = false)
+    {
+        if($label) {
+            $this->forms[$this->lastRow]['label'] = $label;
+        } else {
+            unset($this->forms[$this->lastRow]['label']);
+        }
 
+        return $this;
+    }
 
     public function verification() : array
     {

@@ -35,8 +35,6 @@ class FormsTest extends TestCase
     {
         $forms = new Forms(['test' => 'a']);
 
-        //$forms->text('test', '', '', 10, 4);
-
         $forms
             ->text('test')
             ->min(4)
@@ -259,11 +257,29 @@ class FormsTest extends TestCase
         $forms
             ->text('test')
             ->min(4)
-            ->max(10);
+            ->max(10)
+            ->class('testClass secondClass');
 
         $content = $forms->getForms();
 
-        $this->assertEquals('<input name="test" type="text" minlength="4" maxlength="10">', $content['test']['html']);
+        $this->assertEquals('<input name="test" type="text" minlength="4" maxlength="10" class="testClass secondClass">', $content['test']['html']);
+
+        $this->assertEquals('test', $content['test']['label']);
+    }
+
+    public function testFormLabel()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms
+            ->text('test')
+            ->min(4)
+            ->max(10)
+            ->label(false);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals(false, isset($content['test']['label']));
     }
 
     public function testGetFormsTextarea()
