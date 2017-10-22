@@ -11,14 +11,14 @@ class Forms
     protected $post = [];
     protected $update = false;
 
-    protected $lastRow = '';
+    protected $lastRow;
 
     public function __construct(array $post)
     {
         $this->post = $post;
     }
 
-    protected function row(string $type, string $name) : array
+    protected function row(string $type, string $name)
     {
         $this->lastRow = $name;
 
@@ -28,7 +28,9 @@ class Forms
             $row['attributes']['type'] = $type;
         }
 
-        return $row;
+        $this->forms[$name] = $row;
+
+        $this->lastRow =& $this->forms[$name];
     }
 
     public function updateValues($values = []) {
@@ -134,144 +136,144 @@ class Forms
 
     public function hidden(string $name)
     {
-        $this->forms[$name] = $this->row('hidden', $name);
+        $this->row('hidden', $name);
 
         return $this;
     }
 
     public function text(string $name)
     {
-        $this->forms[$name] = $this->row('text', $name);
+        $this->row('text', $name);
 
         return $this;
     }
 
     public function textarea(string $name)
     {
-        $this->forms[$name] = $this->row('textarea', $name);
-        $this->forms[$name]['value'] = '';
+        $this->row('textarea', $name);
+        $this->lastRow['value'] = '';
 
         return $this;
     }
 
     public function password(string $name)
     {
-        $this->forms[$name] = $this->row('password', $name);
+        $this->row('password', $name);
 
         return $this;
     }
 
     public function email(string $name)
     {
-        $this->forms[$name] = $this->row('password', $name);
+        $this->row('password', $name);
 
         return $this;
     }
 
     public function url(string $name)
     {
-        $this->forms[$name] = $this->row('url', $name);
+        $this->row('url', $name);
 
         return $this;
     }
 
     public function number(string $name)
     {
-        $this->forms[$name] = $this->row('number', $name);
+        $this->row('number', $name);
 
-        $this->forms[$name]['attributes']['step'] = 1;
+        $this->lastRow['attributes']['step'] = 1;
 
         return $this;
     }
 
     public function float(string $name)
     {
-        $this->forms[$name] = $this->row('float', $name);
+        $this->row('float', $name);
 
-        $this->forms[$name]['attributes']['step'] = 0.01;
-        $this->forms[$name]['attributes']['type'] = 'number';
+        $this->lastRow['attributes']['step'] = 0.01;
+        $this->lastRow['attributes']['type'] = 'number';
 
         return $this;
     }
 
     public function date(string $name)
     {
-        $this->forms[$name] = $this->row('date', $name);
+        $this->row('date', $name);
 
-        $this->forms[$name]['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
+        $this->lastRow['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
         return $this;
     }
 
     public function datetime(string $name)
     {
-        $this->forms[$name] = $this->row('datetime', $name);
+        $this->row('datetime', $name);
 
-        $this->forms[$name]['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}';
+        $this->lastRow['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}';
 
         return $this;
     }
 
     public function select(string $name)
     {
-        $this->forms[$name] = $this->row('select', $name);
-        $this->forms[$name]['selected'] = '';
+        $this->row('select', $name);
+        $this->lastRow['selected'] = '';
 
         return $this;
     }
 
     public function radio(string $name)
     {
-        $this->forms[$name] = $this->row('radio', $name);
+        $this->row('radio', $name);
 
         return $this;
     }
 
     public function checkbox(string $name)
     {
-        $this->forms[$name] = $this->row('checkbox', $name);
+        $this->row('checkbox', $name);
 
-        $this->forms[$name]['selected'] = false;
+        $this->lastRow['selected'] = false;
 
         return $this;
     }
 
     public function file(string $name, string $destination, string $ext = '')
     {
-        $this->forms[$name] = $this->row('file', $name);
+        $this->row('file', $name);
 
-        $this->forms[$name]['destination'] = $destination;
-        $this->forms[$name]['ext'] = $ext;
+        $this->lastRow['destination'] = $destination;
+        $this->lastRow['ext'] = $ext;
 
         return $this;
     }
 
     public function min(int $min = 0)
     {
-        $row = $this->forms[$this->lastRow];
+        $row =& $this->lastRow;
         $attr = 'minlength';
         if($row['type'] == 'number' || $row['type'] == 'float') {
             $attr = 'min';
         }
 
-        $this->forms[$this->lastRow]['attributes'][$attr] = $min;
+        $row['attributes'][$attr] = $min;
 
-        $this->forms[$this->lastRow]['min'] = $min;
+        $row['min'] = $min;
 
         return $this;
     }
 
     public function max(int $max = 0)
     {
-        $row = $this->forms[$this->lastRow];
+        $row =& $this->lastRow;
         $attr = 'maxlength';
         if($row['type'] == 'number' || $row['type'] == 'float') {
             $attr = 'max';
         }
 
-        $this->forms[$this->lastRow]['attributes'][$attr] = $max;
+        $row['attributes'][$attr] = $max;
 
-        $this->forms[$this->lastRow]['max'] = $max;
+        $row['max'] = $max;
 
         return $this;
     }
@@ -279,9 +281,9 @@ class Forms
     public function required(bool $required = true)
     {
         if($required) {
-            $this->forms[$this->lastRow]['attributes']['required'] = null;
+            $this->lastRow['attributes']['required'] = null;
         } else {
-            unset($this->forms[$this->lastRow]['attributes']['required']);
+            unset($this->lastRow['attributes']['required']);
         }
 
         return $this;
@@ -291,10 +293,10 @@ class Forms
     {
         // TODO: force variable type base on input type
         // TODO: don't add value attribut if its a radio or a select
-        $this->forms[$this->lastRow]['value'] = $value;
+        $this->lastRow['value'] = $value;
 
         if(!is_array($value)) {
-            $this->forms[$this->lastRow]['attributes']['value'] = $value;
+            $this->lastRow['attributes']['value'] = $value;
         }
 
         return $this;
@@ -304,25 +306,25 @@ class Forms
     {
         // TODO: implements
 
-        $this->forms[$this->lastRow]['attributes']['accept'] = implode(', ', $types);
+        $this->lastRow['attributes']['accept'] = implode(', ', $types);
 
         return $this;
     }
 
     public function class(string $classes = '')
     {
-        $this->forms[$this->lastRow]['attributes']['class'] = $classes;
+        $this->lastRow['attributes']['class'] = $classes;
 
         return $this;
     }
 
     public function selected($selected = true)
     {
-        if($this->forms[$this->lastRow]['type'] === 'checkbox') {
-            $this->forms[$this->lastRow]['attributes']['checked'] = null;
+        if($this->lastRow['type'] === 'checkbox') {
+            $this->lastRow['attributes']['checked'] = null;
         }
 
-        $this->forms[$this->lastRow]['selected'] = $selected;
+        $this->lastRow['selected'] = $selected;
 
         return $this;
     }
@@ -330,9 +332,9 @@ class Forms
     public function multiple($multiple = true)
     {
         if($multiple) {
-            $this->forms[$this->lastRow]['attributes']['multiple'] = null;
+            $this->lastRow['attributes']['multiple'] = null;
         } else {
-            unset($this->forms[$this->lastRow]['attributes']['multiple']);
+            unset($this->lastRow['attributes']['multiple']);
         }
 
         return $this;
@@ -341,9 +343,9 @@ class Forms
     public function pattern($pattern = false)
     {
         if($pattern) {
-            $this->forms[$this->lastRow]['attributes']['pattern'] = $pattern;
+            $this->lastRow['attributes']['pattern'] = $pattern;
         } else {
-            unset($this->forms[$this->lastRow]['attributes']['pattern']);
+            unset($this->lastRow['attributes']['pattern']);
         }
 
 
@@ -353,9 +355,9 @@ class Forms
     public function label($label = false)
     {
         if($label) {
-            $this->forms[$this->lastRow]['label'] = $label;
+            $this->lastRow['label'] = $label;
         } else {
-            unset($this->forms[$this->lastRow]['label']);
+            unset($this->lastRow['label']);
         }
 
         return $this;
