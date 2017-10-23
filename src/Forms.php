@@ -313,7 +313,11 @@ class Forms
 
     public function class(string $classes = '')
     {
-        $this->lastRow['attributes']['class'] = $classes;
+        if($this->lastRow['type'] == 'radio') {
+            $this->lastRow['class'] = $classes;
+        } else {
+            $this->lastRow['attributes']['class'] = $classes;
+        }
 
         return $this;
     }
