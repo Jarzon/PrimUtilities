@@ -165,7 +165,7 @@ class Forms
 
     public function email(string $name)
     {
-        $this->row('password', $name);
+        $this->row('email', $name);
 
         return $this;
     }

@@ -77,6 +77,20 @@ class FormsTest extends TestCase
     }
 
     /**
+     * @expectedException     \Exception
+     * @expectedExceptionMessage test is not a valid email
+     */
+    public function test()
+    {
+        $forms = new Forms(['test' => 'asdf']);
+
+        $forms
+            ->email('test');
+
+        $forms->verification();
+    }
+
+    /**
      * @expectedException     \Error
      * @expectedExceptionMessage 123456789ab doesn't exist
      */
@@ -341,6 +355,20 @@ class FormsTest extends TestCase
         $content = $forms->getForms();
 
         $this->assertEquals('<input name="test" type="number" step="0.01" min="4" max="10">', $content['test']['html']);
+    }
+
+    public function testGetFormsEmail()
+    {
+        $forms = new Forms(['test' => 'a']);
+
+        $forms
+            ->email('test')
+            ->min(4)
+            ->max(10);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input name="test" type="email" minlength="4" maxlength="10">', $content['test']['html']);
     }
 
     public function testGetFormsSelect()
