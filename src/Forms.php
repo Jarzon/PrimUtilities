@@ -199,6 +199,7 @@ class Forms
     public function date(string $name)
     {
         $this->row('date', $name);
+        $this->lastRow['attributes']['type'] = 'text';
 
         $this->lastRow['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
 
@@ -208,6 +209,7 @@ class Forms
     public function datetime(string $name)
     {
         $this->row('datetime', $name);
+        $this->lastRow['attributes']['type'] = 'text';
 
         $this->lastRow['attributes']['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}';
 
