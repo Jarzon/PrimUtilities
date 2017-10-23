@@ -391,8 +391,13 @@ class FormsTest extends TestCase
 
         $forms
             ->radio('test')
-            ->value(['test' => 'test'])
-            ->selected('test');
+            ->value(['test' => 'test']);
+
+        $content = $forms->getForms();
+
+        $this->assertEquals('<input type="radio" name="test" value="test">', $content['test']['html'][0]['input']);
+
+        $forms->selected('test');
 
         $content = $forms->getForms();
 

@@ -95,7 +95,7 @@ class Forms
             foreach($input['value'] as $index => $attrValue) {
                 $attr = ['type' => $input['type'], 'name' => $input['name'], 'value' => $attrValue];
 
-                if($input['selected'] === $attrValue) {
+                if(isset($input['selected']) && $input['selected'] === $attrValue) {
                     $attr['checked'] = null;
                 }
 
@@ -108,7 +108,7 @@ class Forms
             foreach($input['value'] as $index => $attrValue) {
                 $attr = ['value' => $attrValue];
 
-                if($input['selected'] === $attrValue) {
+                if(isset($input['selected']) && $input['selected'] === $attrValue) {
                     $attr['selected'] = null;
                 }
 
