@@ -44,21 +44,23 @@ class Forms
     }
 
     public function updateValue(string $name, $value) {
-        $form =& $this->forms[$name];
+        if(isset($this->forms[$name])) {
+            $form =& $this->forms[$name];
 
-        if($form['type'] == 'checkbox') {
-            if($form['selected'] && $value === '') {
-                unset($form['attributes']['checked']);
+            if($form['type'] == 'checkbox') {
+                if($form['selected'] && $value === '') {
+                    unset($form['attributes']['checked']);
+                }
+                elseif (!$form['selected'] && $value !== '') {
+                    $form['attributes']['checked'] = null;
+                }
             }
-            elseif (!$form['selected'] && $value !== '') {
-                $form['attributes']['checked'] = null;
+            if($form['type'] == 'select' || $form['type'] == 'radio') {
+                $form['selected'] = $value;
+            } else if ($form['type'] != 'file') {
+                $form['value'] = $value;
+                $form['attributes']['value'] = $value;
             }
-        }
-        if($form['type'] == 'select' || $form['type'] == 'radio') {
-            $form['selected'] = $value;
-        } else if ($form['type'] != 'file') {
-            $form['value'] = $value;
-            $form['attributes']['value'] = $value;
         }
 
         return;
