@@ -20,7 +20,7 @@ class Forms
 
     protected function row(string $type, string $name)
     {
-        $row = ['type' => $type, 'name' => $name, 'attributes' => ['name' => $name], 'label' => $name];
+        $row = ['type' => $type, 'name' => $name, 'attributes' => ['name' => $name], 'label' => $name, 'value' => ''];
 
         if(!in_array($type, ['textarea', 'select', 'radio'])) {
             $row['attributes']['type'] = $type;
