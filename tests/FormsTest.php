@@ -37,8 +37,7 @@ class FormsTest extends TestCase
 
         $forms
             ->text('test')
-            ->min(4)
-            ->max(10);
+            ->min(4);
 
         $forms->verification();
     }
@@ -70,7 +69,6 @@ class FormsTest extends TestCase
 
         $forms
             ->text('test')
-            ->min(4)
             ->max(10);
 
         $forms->verification();

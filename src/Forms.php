@@ -421,20 +421,20 @@ class Forms
                 throw new \Exception($input['name'] . ' is required');
             }
             else if((!array_key_exists('required', $input['attributes']) && !empty($value))) {
-                if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email') && isset($input['max'])) {
+                if(($input['type'] == 'text' || $input['type'] == 'password' || $input['type'] == 'email')) {
                     $numberChars = mb_strlen($value);
-                    if($numberChars > $input['max'] && $input['max'] != -1) {
+                    if(!empty($input['max']) && $numberChars > $input['max']) {
                         throw new \Exception($input['name'] . ' is too long');
                     }
-                    else if($numberChars < $input['min']) {
+                    else if(!empty($input['min']) && $numberChars < $input['min']) {
                         throw new \Exception($input['name'] . ' is too short');
                     }
                 }
-                else if(($input['type'] == 'number' || $input['type'] == 'float') && isset($input['min']) && isset($input['max'])) {
-                    if($value > $input['max'] && $input['max'] != -1) {
+                else if(($input['type'] == 'number' || $input['type'] == 'float')) {
+                    if(!empty($input['max']) && $value > $input['max']) {
                         throw new \Exception($input['name'] . ' is too high');
                     }
-                    else if($value < $input['min'] && $input['min'] != -1) {
+                    else if(!empty($input['min']) && $value < $input['min']) {
                         throw new \Exception($input['name'] . ' is too low');
                     }
                 }
@@ -460,7 +460,8 @@ class Forms
                         throw new \Error("$value doesn't exist");
                     }
                 }
-                else if($input['type'] == 'email') {
+
+                if($input['type'] == 'email') {
                     if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                         throw new \Exception($input['name'] . ' is not a valid email');
                     }
