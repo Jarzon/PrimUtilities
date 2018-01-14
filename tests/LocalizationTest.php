@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use Tests\Mock\View;
+use Tests\Mock\Localization;
 
 class LocalizationTest extends TestCase
 {
@@ -12,7 +12,7 @@ class LocalizationTest extends TestCase
     {
         if(!defined('ROOT')) define('ROOT', '');
 
-        $view = new View();
+        $view = new Localization();
 
         $view->setMessagesLanguage();
 

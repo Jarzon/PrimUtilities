@@ -1,21 +1,31 @@
 <?php
 namespace PrimUtilities;
 
-/*
- * Trait used to inject localization code into the View
- * */
-trait Localization
+class Localization
 {
+    protected $view;
+
     public $language = 'en';
     static public $messagesLanguage = '';
     public $messages = [];
+
+    public function __construct($view)
+    {
+        $this->view = $view;
+
+        $this->buildLocalization();
+    }
 
     function buildLocalization() {
         $this->fetchTranslation();
         $this->setMessagesLanguage();
 
-        $this->registerFunction('_', function(string $message) {
+        $this->view->registerFunction('_', function(string $message) {
             return $this->translate($message);
+        });
+
+        $this->view->registerFunction('currencyFormat', function(string $message) {
+            return $this->currency($message);
         });
     }
 
@@ -47,7 +57,7 @@ trait Localization
 
     function fetchTranslation()
     {
-        $file = $this->root . 'app/config/messages.json';
+        $file = ROOT . 'app/config/messages.json';
 
         // Check if we have a translation file for that language
         if (file_exists($file)) {

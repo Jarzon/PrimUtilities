@@ -1,11 +1,7 @@
 <?php
 namespace Tests\Mock;
 
-use PrimUtilities\Localization;
-
-Class View extends \Prim\View {
-    use Localization;
-
+Class Localization extends \PrimUtilities\Localization {
     public function __construct()
     {
         $this->messages = [
