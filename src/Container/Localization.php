@@ -9,6 +9,8 @@ trait Localization {
     {
         $obj = 'localizationService';
 
+        $this->setDefaultParameter($obj, '\PrimUtilities\Localization');
+
         return $this->init($obj, $this->getView());
     }
 }
